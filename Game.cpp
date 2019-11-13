@@ -15,7 +15,7 @@
  ** option) any later version.
  ******************************************************************/
 #include "Game.hpp"
-#include "resource_manager.h"
+#include "ResourceManager.hpp"
 
 
 Game::Game(GLuint width, GLuint height)
