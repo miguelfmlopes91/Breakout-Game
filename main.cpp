@@ -15,6 +15,7 @@
  ** option) any later version.
  ******************************************************************/
 #define GLEW_STATIC
+#define GLFW_INCLUDE_GLCOREARB
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]){
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwSetErrorCallback(error_callback);
 
+    //OpenGL configureview port
 
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
     glfwMakeContextCurrent(window);

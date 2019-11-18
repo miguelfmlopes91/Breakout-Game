@@ -19,6 +19,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "ResourceManager.hpp"
+#include "SpriteRenderer.hpp"
 
 
 // Represents the current state of the game
@@ -38,6 +40,9 @@ public:
     GameState              State;
     GLboolean              Keys[1024];
     GLuint                 Width, Height;
+    
+    SpriteRenderer  *Renderer;
+
     // Constructor/Destructor
     Game(GLuint width, GLuint height);
     ~Game();
