@@ -16,6 +16,7 @@
  ******************************************************************/
 #define GLEW_STATIC
 #define GLFW_INCLUDE_GLCOREARB
+#define GL_SILENCE_DEPRECATION
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>

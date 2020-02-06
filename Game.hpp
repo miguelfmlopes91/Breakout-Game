@@ -21,6 +21,7 @@
 #include <GLFW/glfw3.h>
 #include "ResourceManager.hpp"
 #include "SpriteRenderer.hpp"
+#include "GameLevel.hpp"
 
 
 // Represents the current state of the game
@@ -36,22 +37,23 @@ enum GameState {
 class Game
 {
 public:
-    // Game state
-    GameState              State;
-    GLboolean              Keys[1024];
-    GLuint                 Width, Height;
-    
-    SpriteRenderer  *Renderer;
-
-    // Constructor/Destructor
     Game(GLuint width, GLuint height);
     ~Game();
+    
     // Initialize game state (load all shaders/textures/levels)
     void Init();
     // GameLoop
     void ProcessInput(GLfloat dt);
     void Update(GLfloat dt);
     void Render();
+    
+    // Game state
+    GameState              State;
+    GLboolean              Keys[1024];
+    GLuint                 Width, Height;
+    std::vector<GameLevel> Levels;
+    GLuint                 Level;
+    SpriteRenderer  *Renderer;
 };
 
 #endif
