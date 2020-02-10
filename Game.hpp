@@ -48,12 +48,13 @@ public:
     void Render();
     
     // Game state
-    GameState              State;
-    GLboolean              Keys[1024];
-    GLuint                 Width, Height;
-    std::vector<GameLevel> Levels;
-    GLuint                 Level;
-    SpriteRenderer  *Renderer;
+    GameState               State;
+    GLboolean               Keys[1024];
+    GLuint                  Width, Height;
+    std::vector<GameLevel>  Levels;
+    GLuint                  Level;
+    SpriteRenderer          *Renderer;
+    GameObject      *Player;
 };
 
 #endif
