@@ -59,15 +59,13 @@ void Game::Init(){
     this->Levels.push_back(two);
     this->Levels.push_back(three);
     this->Levels.push_back(four);
-    this->Level = 1;    // Set render-specific controls
-    //setup Paddle
-    glm::vec2 playerPos = glm::vec2(
-        this->Width / 2 - PLAYER_SIZE.x / 2,
-        this->Height - PLAYER_SIZE.y
-    );
+    this->Level = 0;    // Set render-specific controls
+    
+    // Configure game objects
+    glm::vec2 playerPos = glm::vec2(this->Width / 2 - PLAYER_SIZE.x / 2, this->Height - PLAYER_SIZE.y);
     Player = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
     
-    //configure Renderer
+    // Set render-specific controls
     Shader myShader;
     myShader = ResourceManager::GetShader("sprite");
     Renderer = new SpriteRenderer(myShader);
@@ -105,6 +103,7 @@ void Game::Render(){
                              0.0f);
         // Draw level
         this->Levels[this->Level].Draw(*Renderer);
+        // Draw player
+        Player->Draw(*Renderer);
     }
-    Player->Draw(*Renderer);
 }
