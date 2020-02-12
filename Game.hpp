@@ -22,6 +22,7 @@
 #include "ResourceManager.hpp"
 #include "SpriteRenderer.hpp"
 #include "GameLevel.hpp"
+#include "BallObject.hpp"
 
 
 // Represents the current state of the game
@@ -47,6 +48,8 @@ public:
     void Update(GLfloat dt);
     void Render();
     
+    void DoCollisions();
+    
     // Game state
     GameState               State;
     GLboolean               Keys[1024];
@@ -54,7 +57,9 @@ public:
     std::vector<GameLevel>  Levels;
     GLuint                  Level;
     SpriteRenderer          *Renderer;
-    GameObject      *Player;
+    GameObject              *Player;
+    BallObject              *Ball;
+
 };
 
 #endif
