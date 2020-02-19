@@ -32,11 +32,18 @@ enum GameState {
     GAME_WIN
 };
 
+// Represents the direction of a vector in the game
+enum Direction {
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
+};
+
 // Game holds all game-related state and functionality.
 // Combines all game-related data into a single class for
 // easy access to each of the components and manageability.
-class Game
-{
+class Game{
 public:
     Game(GLuint width, GLuint height);
     ~Game();
