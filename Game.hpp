@@ -40,6 +40,8 @@ enum Direction {
     LEFT
 };
 
+typedef std::tuple<GLboolean, Direction, glm::vec2> Collision;
+
 // Game holds all game-related state and functionality.
 // Combines all game-related data into a single class for
 // easy access to each of the components and manageability.
@@ -55,6 +57,9 @@ public:
     void Update(GLfloat dt);
     void Render();
     
+    /*The function  calculates the level of penetration and adds or subtracts it
+    * from the ball's position based on the direction of the collision.
+    */
     void DoCollisions();
     
     // Game state
@@ -66,7 +71,6 @@ public:
     SpriteRenderer          *Renderer;
     GameObject              *Player;
     BallObject              *Ball;
-
 };
 
 #endif

@@ -28,8 +28,8 @@ const GLfloat BALL_RADIUS = 12.5f;
 // AABB - AABB collisions detection
 //Rectangle collision
 inline GLboolean CheckCollision(GameObject &one, GameObject &two);
-// Circle collision --Specially for BallObject
-inline GLboolean CheckCollision(BallObject &one, GameObject &two);
+// Circle collision --Specially for BallObject, returns if collides and direction and new vector
+Collision CheckCollision(BallObject &one, GameObject &two);
 // Vector Direction -- Returns the Vector Direction after a collision
 inline Direction VectorDirection(glm::vec2 target);
 
@@ -139,9 +139,34 @@ void Game::Render(){
 void Game::DoCollisions(){
     for (GameObject &box : this->Levels[this->Level].Bricks){
         if (!box.Destroyed){
-            if (CheckCollision(*Ball, box)){
+            Collision collision = CheckCollision(*Ball, box);
+            if (std::get<0>(collision)){ // If collision is true
+                // Destroy block if not solid
                 if (!box.IsSolid)
                     box.Destroyed = GL_TRUE;
+                // Collision resolution
+                Direction dir = std::get<1>(collision);
+                glm::vec2 diff_vector = std::get<2>(collision);
+                if (dir == LEFT || dir == RIGHT){ // Horizontal collision
+                    Ball->Velocity.x = -Ball->Velocity.x; // Reverse horizontal velocity
+                    // Relocate
+                    GLfloat penetration = Ball->Radius - std::abs(diff_vector.x);
+                    if (dir == LEFT){
+                        Ball->Position.x += penetration; // Move ball to right
+                    } else{
+                        Ball->Position.x -= penetration; // Move ball to left;
+                    }
+                } else { // Vertical collision
+                    Ball->Velocity.y = -Ball->Velocity.y; // Reverse vertical velocity
+                    // Relocate
+                    GLfloat penetration = Ball->Radius - std::abs(diff_vector.y);
+                    if (dir == UP){
+                        Ball->Position.y -= penetration; // Move ball back up
+                    }
+                    else{
+                        Ball->Position.y += penetration; // Move ball back down
+                    }
+                }
             }
         }
     }
@@ -158,7 +183,7 @@ inline GLboolean CheckCollision(GameObject &one, GameObject &two){ // AABB - Rec
     return collisionX && collisionY;
 }
 
-inline GLboolean CheckCollision(BallObject &one, GameObject &two){ // AABB - Circle collision
+Collision CheckCollision(BallObject &one, GameObject &two){ // AABB - Circle collision
     // Get center point circle first
     glm::vec2 center(one.Position + one.Radius);
     // Calculate AABB info (center, half-extents)
@@ -174,14 +199,18 @@ inline GLboolean CheckCollision(BallObject &one, GameObject &two){ // AABB - Cir
     glm::vec2 closest = aabb_center + clamped;
     // Retrieve vector between center circle and closest point AABB and check if length <= radius
     difference = closest - center;
-    return glm::length(difference) < one.Radius;
+    if (glm::length(difference) <= one.Radius){
+        return std::make_tuple(GL_TRUE, VectorDirection(difference), difference);
+    }else {
+        return std::make_tuple(GL_FALSE, UP, glm::vec2(0, 0));
+    }
 }
 
 inline Direction VectorDirection(glm::vec2 target){
     glm::vec2 compass[] = {
         glm::vec2(0.0f, 1.0f),    // up
         glm::vec2(1.0f, 0.0f),    // right
-        glm::vec2(0.0f, -1.0f),    // down
+        glm::vec2(0.0f, -1.0f),   // down
         glm::vec2(-1.0f, 0.0f)    // left
     };
     GLfloat max = 0.0f;
