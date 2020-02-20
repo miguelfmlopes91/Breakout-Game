@@ -139,6 +139,7 @@ void Game::Render(){
 void Game::DoCollisions(){
     for (GameObject &box : this->Levels[this->Level].Bricks){
         if (!box.Destroyed){
+            //Ball - brick collisions
             Collision collision = CheckCollision(*Ball, box);
             if (std::get<0>(collision)){ // If collision is true
                 // Destroy block if not solid
@@ -167,6 +168,26 @@ void Game::DoCollisions(){
                         Ball->Position.y += penetration; // Move ball back down
                     }
                 }
+            }
+            
+            //Player - ball collisions
+            Collision result = CheckCollision(*Ball, *Player);
+            //The further the ball hits the paddle from its center,
+            //the stronger its horizontal velocity should be.
+            if (!Ball->Stuck && std::get<0>(result)){
+                // Check where it hit the board, and change velocity based on where it hit the board
+                GLfloat centerBoard = Player->Position.x + Player->Size.x / 2;
+                GLfloat distance = (Ball->Position.x + Ball->Radius) - centerBoard;
+                GLfloat percentage = distance / (Player->Size.x / 2);
+                // Then move accordingly
+                GLfloat strength = 2.0f;
+                glm::vec2 oldVelocity = Ball->Velocity;
+                Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
+                Ball->Velocity.y = -Ball->Velocity.y;
+                //new velocity vector is normalized and multiplied by the length of the old velocity vector.
+                //This way, the strength and thus the velocity of the ball is always consistent,
+                //regardless of where it hits the paddle.
+                Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity);
             }
         }
     }
