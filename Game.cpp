@@ -29,7 +29,7 @@ const GLfloat BALL_RADIUS = 12.5f;
 //Rectangle collision
 inline GLboolean CheckCollision(GameObject &one, GameObject &two);
 // Circle collision --Specially for BallObject, returns if collides and direction and new vector
-Collision CheckCollision(BallObject &one, GameObject &two);
+inline Collision CheckCollision(BallObject &one, GameObject &two);
 // Vector Direction -- Returns the Vector Direction after a collision
 inline Direction VectorDirection(glm::vec2 target);
 
@@ -41,6 +41,7 @@ Game::Game(GLuint width, GLuint height)
 Game::~Game(){
     delete Renderer;
     delete Player;
+    //TODO:: delete ball and others
 }
 
 void Game::Init(){
@@ -59,12 +60,12 @@ void Game::Init(){
 
     // Load levels
     GameLevel one;
-    one.Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5);
     GameLevel two;
-    two.Load("Resources/levels/two.lvl", this->Width, this->Height * 0.5);
     GameLevel three;
-    three.Load("Resources/levels/three.lvl", this->Width, this->Height * 0.5);
     GameLevel four;
+    one.Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5);
+    two.Load("Resources/levels/two.lvl", this->Width, this->Height * 0.5);
+    three.Load("Resources/levels/three.lvl", this->Width, this->Height * 0.5);
     four.Load("Resources/levels/four.lvl", this->Width, this->Height * 0.5);
     this->Levels.push_back(one);
     this->Levels.push_back(two);
@@ -86,9 +87,15 @@ void Game::Init(){
 }
 
 void Game::Update(GLfloat dt){
+    // Update objects
     Ball->Move(dt, this->Width);
     // Check for collisions
     DoCollisions();
+    // Check loss condition
+    if (Ball->Position.y >= this->Height){ // Did ball reach bottom edge?
+        this->ResetLevel();
+        this->ResetPlayer();
+    }
 }
 
 
@@ -131,9 +138,26 @@ void Game::Render(){
         this->Levels[this->Level].Draw(*Renderer);
         // Draw player
         Player->Draw(*Renderer);
-        //Draw ball
+        // Draw ball
         Ball->Draw(*Renderer);
     }
+}
+
+void Game::ResetLevel(){
+    if (this->Level == 0)this->Levels[0].Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5f);
+    else if (this->Level == 1)
+        this->Levels[1].Load("Resources/levels/two.lvl", this->Width, this->Height * 0.5f);
+    else if (this->Level == 2)
+        this->Levels[2].Load("Resources/levels/three.lvl", this->Width, this->Height * 0.5f);
+    else if (this->Level == 3)
+        this->Levels[3].Load("Resources/levels/four.lvl", this->Width, this->Height * 0.5f);
+}
+
+void Game::ResetPlayer(){
+    // Reset player/ball stats
+    Player->Size = PLAYER_SIZE;
+    Player->Position = glm::vec2(this->Width / 2 - PLAYER_SIZE.x / 2, this->Height - PLAYER_SIZE.y);
+    Ball->Reset(Player->Position + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -(BALL_RADIUS * 2)), INITIAL_BALL_VELOCITY);
 }
 
 void Game::DoCollisions(){
@@ -183,11 +207,19 @@ void Game::DoCollisions(){
                 GLfloat strength = 2.0f;
                 glm::vec2 oldVelocity = Ball->Velocity;
                 Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
-                Ball->Velocity.y = -Ball->Velocity.y;
+                //Ball->Velocity.y = -Ball->Velocity.y;
+                Ball->Velocity.y = -1 * abs(Ball->Velocity.y);//hack: assume we always have a collision at the top of the paddle
+
                 //new velocity vector is normalized and multiplied by the length of the old velocity vector.
                 //This way, the strength and thus the velocity of the ball is always consistent,
                 //regardless of where it hits the paddle.
                 Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity);
+            }
+            
+            //check if it hits Bottom Edge
+            if (Ball->Position.y >= this->Height){ // Did ball reach bottom edge?
+                this->ResetLevel();
+                this->ResetPlayer();
             }
         }
     }
@@ -204,7 +236,7 @@ inline GLboolean CheckCollision(GameObject &one, GameObject &two){ // AABB - Rec
     return collisionX && collisionY;
 }
 
-Collision CheckCollision(BallObject &one, GameObject &two){ // AABB - Circle collision
+inline Collision CheckCollision(BallObject &one, GameObject &two){ // AABB - Circle collision
     // Get center point circle first
     glm::vec2 center(one.Position + one.Radius);
     // Calculate AABB info (center, half-extents)
@@ -227,6 +259,7 @@ Collision CheckCollision(BallObject &one, GameObject &two){ // AABB - Circle col
     }
 }
 
+// Calculates which direction a vector is facing (N,E,S or W)
 inline Direction VectorDirection(glm::vec2 target){
     glm::vec2 compass[] = {
         glm::vec2(0.0f, 1.0f),    // up
