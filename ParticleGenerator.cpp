@@ -36,7 +36,7 @@ void ParticleGenerator::init(){
     glBindVertexArray(0);
 
     // Create this->amount default particle instances
-    for (GLuint i = 0; i < this->amount; ++i)//TODO: JobSystem
+    for (GLuint i = 0; i < this->amount; ++i)//TODO: JobSystem and decent ObjectPool
         this->particles.push_back(Particle());
 }
 
@@ -61,7 +61,7 @@ void ParticleGenerator::Update(GLfloat dt, GameObject &object, GLuint newParticl
 
 // Render all particles
 void ParticleGenerator::Draw(){
-    // Use additive blending to give it a 'glow' effect
+    // Use additive blending (GL_ONE)to give it a 'glow' effect
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     this->shader.Use();
     for (Particle particle : this->particles){
@@ -81,7 +81,7 @@ void ParticleGenerator::Draw(){
 
 // Stores the index of the last particle used (for quick access to next dead particle)
 GLuint lastUsedParticle = 0;//TODO: check this
-GLuint ParticleGenerator::firstUnusedParticle(){
+GLuint ParticleGenerator::firstUnusedParticle(){//TODO: have a another structure for unusedParticles.
     // First search from last used particle, this will usually return almost instantly
     for (GLuint i = lastUsedParticle; i < this->amount; ++i){
         if (this->particles[i].Life <= 0.0f){
@@ -97,6 +97,8 @@ GLuint ParticleGenerator::firstUnusedParticle(){
         }
     }
     // All particles are taken, override the first one (note that if it repeatedly hits this case, more particles should be reserved)
+    // Note that if it reaches this last case, it means  particles are alive for too long,
+    // need to spawn less particles per frame and/or simply don't have enough particles reserved.
     lastUsedParticle = 0;
     return 0;
 }

@@ -23,6 +23,7 @@
 #include "SpriteRenderer.hpp"
 #include "GameLevel.hpp"
 #include "BallObject.hpp"
+#include "ParticleGenerator.hpp"
 
 
 // Represents the current state of the game
@@ -73,6 +74,7 @@ private:
     SpriteRenderer          *Renderer;
     GameObject              *Player;
     BallObject              *Ball;
+    ParticleGenerator   *Particles;
 };
 
 #endif
