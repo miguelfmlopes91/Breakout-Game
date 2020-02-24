@@ -51,6 +51,8 @@ void Game::Init(){
     // Load shaders
     ResourceManager::LoadShader("Resources/shaders/sprite.vs", "Resources/shaders/sprite.frag", nullptr, "sprite");
     ResourceManager::LoadShader("Resources/shaders/particle.vs", "Resources/shaders/particle.frag", nullptr, "particle");
+    ResourceManager::LoadShader("Resources/shaders/post_processing.vs", "Resources/shaders/post_processing.frag", nullptr, "postprocessing");
+
     
     // Configure shaders
     glm::mat4 projection = glm::ortho(0.0f,static_cast<GLfloat>(Width),static_cast<GLfloat>(Height),0.0f, -1.0f, 1.0f);
@@ -70,6 +72,8 @@ void Game::Init(){
     Shader myShader;//TODO: FIX THIS
     myShader    = ResourceManager::GetShader("sprite");
     Renderer    = new SpriteRenderer(myShader);
+    Effects     = new PostProcessor(ResourceManager::GetShader("postprocessing"), this->Width, this->Height);
+
     //Setup Particle System
     Particles   = new ParticleGenerator(ResourceManager::GetShader("particle"),ResourceManager::GetTexture("particle"),500);
 
@@ -93,6 +97,10 @@ void Game::Init(){
     glm::vec2 ballPos = playerPos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2);
     Player  = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
     Ball    = new BallObject(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::GetTexture("face"));
+    
+    //Effects->Shake = GL_TRUE;
+    //Effects->Confuse = GL_TRUE;
+    //Effects->Chaos = GL_TRUE;
 }
 
 void Game::Update(GLfloat dt){
