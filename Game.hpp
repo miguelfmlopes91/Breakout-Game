@@ -24,6 +24,7 @@
 #include "GameLevel.hpp"
 #include "BallObject.hpp"
 #include "ParticleGenerator.hpp"
+#include "PostProcessor.hpp"
 
 
 // Represents the current state of the game
@@ -71,10 +72,12 @@ public:
 private:
     void DoCollisions();
     // Game-related State data
-    SpriteRenderer          *Renderer;
-    GameObject              *Player;
-    BallObject              *Ball;
+    SpriteRenderer      *Renderer;
+    GameObject          *Player;
+    BallObject          *Ball;
     ParticleGenerator   *Particles;
+    PostProcessor       *Effects;
+
 };
 
 #endif

@@ -25,6 +25,9 @@ const GLfloat PLAYER_VELOCITY(500.0f);
 const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
 // Radius of the ball object
 const GLfloat BALL_RADIUS = 12.5f;
+//Shake animation time
+GLfloat ShakeTime = 0.0f;
+
 // AABB - AABB collisions detection
 //Rectangle collision
 inline GLboolean CheckCollision(GameObject &one, GameObject &two);
@@ -104,6 +107,12 @@ void Game::Update(GLfloat dt){
         this->ResetLevel();
         this->ResetPlayer();
     }
+    //slowly get shake time back to zero
+    if (ShakeTime > 0.0f){
+        ShakeTime -= dt;
+        if (ShakeTime <= 0.0f)
+            Effects->Shake = false;
+    }
 }
 
 void Game::ProcessInput(GLfloat dt){
@@ -135,25 +144,31 @@ void Game::Render(){
     Texture2D myTexture;
     myTexture = ResourceManager::GetTexture("background");//TODO:move this into Init
     if(State == GAME_ACTIVE){
-        // Draw background
-        Renderer->DrawSprite(myTexture,
-                             glm::vec2(0, 0),
-                             glm::vec2(this->Width,
-                                       this->Height),
-                             0.0f);
-        // Draw level
-        this->Levels[this->Level].Draw(*Renderer);
-        // Draw player
-        Player->Draw(*Renderer);
-        // Draw particles
-        Particles->Draw();
-        // Draw ball
-        Ball->Draw(*Renderer);
+        
+        // Begin rendering to postprocessing quad
+        Effects->BeginRender();
+        
+            // Draw background
+            Renderer->DrawSprite(myTexture,glm::vec2(0, 0),glm::vec2(this->Width,this->Height),0.0f);
+            // Draw level
+            this->Levels[this->Level].Draw(*Renderer);
+            // Draw player
+            Player->Draw(*Renderer);
+            // Draw particles
+            Particles->Draw();
+            // Draw ball
+            Ball->Draw(*Renderer);
+        
+        // End rendering to postprocessing quad
+        Effects->EndRender();
+        // Render postprocessing quad
+        Effects->Render(glfwGetTime());
     }
 }
 
 void Game::ResetLevel(){
-    if (this->Level == 0)this->Levels[0].Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5f);
+    if (this->Level == 0)
+        this->Levels[0].Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5f);
     else if (this->Level == 1)
         this->Levels[1].Load("Resources/levels/two.lvl", this->Width, this->Height * 0.5f);
     else if (this->Level == 2)
@@ -176,8 +191,12 @@ void Game::DoCollisions(){
             Collision collision = CheckCollision(*Ball, box);
             if (std::get<0>(collision)){ // If collision is true
                 // Destroy block if not solid
-                if (!box.IsSolid)
+                if (!box.IsSolid){
                     box.Destroyed = GL_TRUE;
+                } else {   // if block is solid, enable shake effect
+                    ShakeTime = 0.05f;
+                    Effects->Shake = true;
+                }
                 // Collision resolution
                 Direction dir = std::get<1>(collision);
                 glm::vec2 diff_vector = std::get<2>(collision);
