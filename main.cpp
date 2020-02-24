@@ -79,17 +79,17 @@ int main(int argc, char *argv[]){
     // Start Game within Menu State
     Breakout.State = GAME_ACTIVE;
     
-    while (!glfwWindowShouldClose(window))
-    {
-        // Calculate delta time
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+    while (!glfwWindowShouldClose(window)){
         glfwPollEvents();
         
         //deltaTime = 0.001f;
         // Manage user input
         Breakout.ProcessInput(deltaTime);
+        
+        // Calculate delta time
+        GLfloat currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
         
         // Update Game state
         Breakout.Update(deltaTime);
