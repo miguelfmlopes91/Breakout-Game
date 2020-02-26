@@ -6,15 +6,13 @@
 //  Copyright © 2020 Miguel Lopes. All rights reserved.
 //
 
-#ifndef BallObject_hpp
-#define BallObject_hpp
+#pragma once
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
 #include "Texture.hpp"
-#include "SpriteRenderer.hpp"
-#include "GameObject.hpp"
+#include "PowerUp.hpp"
 
 // BallObject holds the state of the Ball object inheriting
 // relevant state data from GameObject. Contains some extra
@@ -36,6 +34,5 @@ public:
     // Ball state
     GLfloat   Radius;
     GLboolean Stuck;
+    GLboolean Sticky, PassThrough;
 };
-
-#endif /* BallObject_hpp */

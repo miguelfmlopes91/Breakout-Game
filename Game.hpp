@@ -25,6 +25,7 @@
 #include "BallObject.hpp"
 #include "ParticleGenerator.hpp"
 #include "PostProcessor.hpp"
+#include "PowerUp.hpp"
 
 
 // Represents the current state of the game
@@ -68,15 +69,20 @@ public:
     GLuint                  Width, Height;
     std::vector<GameLevel>  Levels;
     GLuint                  Level;
+    std::vector<PowerUp>    PowerUps;
 
 private:
     void DoCollisions();
+    void SpawnPowerUps(GameObject &block);
+    void UpdatePowerUps(GLfloat dt);
+    void ActivatePowerUp(PowerUp &powerUp);
     // Game-related State data
     SpriteRenderer      *Renderer;
     GameObject          *Player;
     BallObject          *Ball;
     ParticleGenerator   *Particles;
     PostProcessor       *Effects;
+    GLfloat             ShakeTime = 0.0f;
 
 };
 
