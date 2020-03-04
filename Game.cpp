@@ -43,7 +43,7 @@ inline GLboolean IsOtherPowerUpActive(std::vector<PowerUp> &powerUps, std::strin
 
 
 Game::Game(GLuint width, GLuint height)
-: State(GAME_ACTIVE), Keys(), Width(width), Height(height){
+: State(GAME_ACTIVE), Keys(), Width(width), Height(height), Level(0), Lives(3){
 }
 
 Game::~Game(){
@@ -86,9 +86,12 @@ void Game::Init(){
     myShader    = ResourceManager::GetShader("sprite");
     Renderer    = new SpriteRenderer(myShader);
     Effects     = new PostProcessor(ResourceManager::GetShader("postprocessing"), this->Width, this->Height);
+    Text        = new TextRenderer(this->Width, this->Height);
+    Text->Load("Resources/fonts/ocraext.TTF", 24);
 
     //Setup Particle System
-    Particles   = new ParticleGenerator(ResourceManager::GetShader("particle"),ResourceManager::GetTexture("particle"),500);
+    Particles   = new  ParticleGenerator(ResourceManager::GetShader("particle"),
+                                         ResourceManager::GetTexture("particle"),500);
 
     // Load levels
     GameLevel one;
@@ -133,7 +136,13 @@ void Game::Update(GLfloat dt){
     }
     // Check loss condition
     if (Ball->Position.y >= this->Height){ // Did ball reach bottom edge?
-        this->ResetLevel();
+        --this->Lives;
+        // Did the player lose all his lives? : Game over
+        if (this->Lives == 0)
+        {
+            this->ResetLevel();
+            this->State = GAME_MENU;
+        }
         this->ResetPlayer();
     }
 }
@@ -167,7 +176,6 @@ void Game::Render(){
     Texture2D myTexture;
     myTexture = ResourceManager::GetTexture("background");//TODO:move this into Init
     if(State == GAME_ACTIVE){
-        
         // Begin rendering to postprocessing quad
         Effects->BeginRender();
         
@@ -189,6 +197,17 @@ void Game::Render(){
         Effects->EndRender();
         // Render postprocessing quad
         Effects->Render(glfwGetTime());
+        // Render text (don't include in postprocessing)
+        std::string ss(std::to_string(Lives));
+        Text->RenderText("Lives:" + ss, 5.0f, 5.0f, 1.0f);
+    }
+    if (this->State == GAME_MENU){
+        Text->RenderText("Press ENTER to start", 250.0f, this->Height / 2, 1.0f);
+        Text->RenderText("Press W or S to select level", 245.0f, this->Height / 2 + 20.0f, 0.75f);
+    }
+    if (this->State == GAME_WIN){
+        Text->RenderText("You WON!!!", 320.0f, this->Height / 2 - 20.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        Text->RenderText("Press ENTER to retry or ESC to quit", 130.0f, this->Height / 2, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f));
     }
 }
 
@@ -201,6 +220,8 @@ void Game::ResetLevel(){
         this->Levels[2].Load("Resources/levels/three.lvl", this->Width, this->Height * 0.5f);
     else if (this->Level == 3)
         this->Levels[3].Load("Resources/levels/four.lvl", this->Width, this->Height * 0.5f);
+    //Reset lives
+    this->Lives = 3;
 }
 
 void Game::ResetPlayer(){
