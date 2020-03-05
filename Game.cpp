@@ -43,7 +43,7 @@ inline GLboolean IsOtherPowerUpActive(std::vector<PowerUp> &powerUps, std::strin
 
 
 Game::Game(GLuint width, GLuint height)
-: State(GAME_ACTIVE), Keys(), Width(width), Height(height), Level(0), Lives(3){
+: State(GAME_MENU), Keys(), Width(width), Height(height), Level(0), Lives(3){
 }
 
 Game::~Game(){
@@ -52,6 +52,7 @@ Game::~Game(){
     delete Ball;
     delete Particles;
     delete Effects;
+    delete Text;
 }
 
 void Game::Init(){
@@ -60,7 +61,6 @@ void Game::Init(){
     ResourceManager::LoadShader("Resources/shaders/particle.vs", "Resources/shaders/particle.frag", nullptr, "particle");
     ResourceManager::LoadShader("Resources/shaders/post_processing.vs", "Resources/shaders/post_processing.frag", nullptr, "postprocessing");
 
-    
     // Configure shaders
     glm::mat4 projection = glm::ortho(0.0f,static_cast<GLfloat>(Width),static_cast<GLfloat>(Height),0.0f, -1.0f, 1.0f);
     ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
@@ -138,20 +138,55 @@ void Game::Update(GLfloat dt){
     if (Ball->Position.y >= this->Height){ // Did ball reach bottom edge?
         --this->Lives;
         // Did the player lose all his lives? : Game over
-        if (this->Lives == 0)
-        {
+        if (this->Lives == 0){
             this->ResetLevel();
             this->State = GAME_MENU;
         }
         this->ResetPlayer();
     }
+    // Check win condition
+    if (this->State == GAME_ACTIVE && this->Levels[this->Level].IsCompleted()){
+        this->ResetLevel();
+        this->ResetPlayer();
+        Effects->Chaos = GL_TRUE;
+        this->State = GAME_WIN;
+    }
 }
 
 void Game::ProcessInput(GLfloat dt){
+    if (this->State == GAME_MENU){
+        if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
+        {
+            this->State = GAME_ACTIVE;
+            this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
+        }
+        if (this->Keys[GLFW_KEY_W] && !this->KeysProcessed[GLFW_KEY_W])
+        {
+            this->Level = (this->Level + 1) % 4;
+            this->KeysProcessed[GLFW_KEY_W] = GL_TRUE;
+        }
+        if (this->Keys[GLFW_KEY_S] && !this->KeysProcessed[GLFW_KEY_S])
+        {
+            if (this->Level > 0)
+                --this->Level;
+            else
+                this->Level = 3;
+            this->KeysProcessed[GLFW_KEY_S] = GL_TRUE;
+        }
+    }
+    if (this->State == GAME_WIN){
+        if (this->Keys[GLFW_KEY_ENTER])
+        {
+            this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
+            Effects->Chaos = GL_FALSE;
+            this->State = GAME_MENU;
+        }
+    }
     if (this->State == GAME_ACTIVE){
         GLfloat velocity = PLAYER_VELOCITY * dt;
         // Move playerboard
-        if (this->Keys[GLFW_KEY_A]){
+        if (this->Keys[GLFW_KEY_A])
+        {
             if (Player->Position.x >= 0)
             {
                 Player->Position.x -= velocity;
@@ -159,23 +194,24 @@ void Game::ProcessInput(GLfloat dt){
                     Ball->Position.x -= velocity;
             }
         }
-        if (this->Keys[GLFW_KEY_D]){
-            if (Player->Position.x <= this->Width - Player->Size.x){
+        if (this->Keys[GLFW_KEY_D])
+        {
+            if (Player->Position.x <= this->Width - Player->Size.x)
+            {
                 Player->Position.x += velocity;
                 if (Ball->Stuck)
                     Ball->Position.x += velocity;
             }
         }
-        //move paddle
         if (this->Keys[GLFW_KEY_SPACE])
-            Ball->Stuck = false;
+            Ball->Stuck = GL_FALSE;
     }
 }
 
 void Game::Render(){
     Texture2D myTexture;
     myTexture = ResourceManager::GetTexture("background");//TODO:move this into Init
-    if(State == GAME_ACTIVE){
+    if (this->State == GAME_ACTIVE || this->State == GAME_MENU || this->State == GAME_WIN){
         // Begin rendering to postprocessing quad
         Effects->BeginRender();
         
@@ -185,13 +221,15 @@ void Game::Render(){
             this->Levels[this->Level].Draw(*Renderer);
             // Draw player
             Player->Draw(*Renderer);
+            // Draw PowerUps
+            for (PowerUp &powerUp : this->PowerUps)
+                if (!powerUp.Destroyed)
+                    powerUp.Draw(*Renderer);
             // Draw particles
             Particles->Draw();
             // Draw ball
             Ball->Draw(*Renderer);
-            for (PowerUp &powerUp : this->PowerUps)
-                if (!powerUp.Destroyed)
-                    powerUp.Draw(*Renderer);
+
         
         // End rendering to postprocessing quad
         Effects->EndRender();

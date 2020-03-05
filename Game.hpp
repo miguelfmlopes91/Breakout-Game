@@ -72,6 +72,7 @@ public:
     GLuint                  Level;
     std::vector<PowerUp>    PowerUps;
     GLuint                  Lives;
+    GLboolean               KeysProcessed[1024];
 
 private:
     void DoCollisions();
