@@ -27,8 +27,7 @@
 #include "Shader.hpp"
 
 
-class SpriteRenderer
-{
+class SpriteRenderer{
 public:
     // Constructor (inits shaders/shapes)
     SpriteRenderer(Shader &shader);
@@ -41,8 +40,8 @@ public:
                     glm::vec3 color = glm::vec3(1.0f));
 private:
     // Render state
-    Shader shader;
-    GLuint quadVAO;
+    Shader _shader;
+    GLuint _quadVAO;
     // Initializes and configures the quad's buffer and vertex attributes
     void initRenderData();
 };

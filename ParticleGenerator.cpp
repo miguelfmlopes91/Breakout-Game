@@ -9,7 +9,7 @@
 #include "ParticleGenerator.hpp"
 ParticleGenerator::ParticleGenerator(Shader shader, Texture2D texture, GLuint amount)
     : shader(shader), texture(texture), amount(amount){
-    this->init();
+    init();
 }
 
 void ParticleGenerator::init(){
@@ -24,9 +24,9 @@ void ParticleGenerator::init(){
         1.0f, 1.0f, 1.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f
     };
-    glGenVertexArrays(1, &this->VAO);
+    glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glBindVertexArray(this->VAO);
+    glBindVertexArray(VAO);
     // Fill mesh buffer
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(particle_quad), particle_quad, GL_STATIC_DRAW);
@@ -35,9 +35,9 @@ void ParticleGenerator::init(){
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
     glBindVertexArray(0);
 
-    // Create this->amount default particle instances
-    for (GLuint i = 0; i < this->amount; ++i)//TODO: JobSystem and decent ObjectPool
-        this->particles.push_back(Particle());
+    // Create amount default particle instances
+    for (GLuint i = 0; i < amount; ++i)//TODO: JobSystem and decent ObjectPool
+        particles.push_back(Particle());
 }
 
 //Then in each frame, we spawn several new particles with starting values
@@ -45,12 +45,12 @@ void ParticleGenerator::init(){
 void ParticleGenerator::Update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset){
     // Add new particles
     for (GLuint i = 0; i < newParticles; ++i){
-        int unusedParticle = this->firstUnusedParticle();
-        this->respawnParticle(this->particles[unusedParticle], object, offset);
+        int unusedParticle = firstUnusedParticle();
+        respawnParticle(particles[unusedParticle], object, offset);
     }
     // Update all particles
-    for (GLuint i = 0; i < this->amount; ++i){
-        Particle &p = this->particles[i];
+    for (GLuint i = 0; i < amount; ++i){
+        Particle &p = particles[i];
         p.Life -= dt; // reduce life
         if (p.Life > 0.0f){// particle is alive, thus update
             p.Position -= p.Velocity * dt;
@@ -63,13 +63,13 @@ void ParticleGenerator::Update(GLfloat dt, GameObject &object, GLuint newParticl
 void ParticleGenerator::Draw(){
     // Use additive blending (GL_ONE)to give it a 'glow' effect
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    this->shader.Use();
-    for (Particle particle : this->particles){
+    shader.Use();
+    for (Particle particle : particles){
         if (particle.Life > 0.0f){
-            this->shader.SetVector2f("offset", particle.Position);
-            this->shader.SetVector4f("color", particle.Color);
-            this->texture.Bind();
-            glBindVertexArray(this->VAO);
+            shader.SetVector2f("offset", particle.Position);
+            shader.SetVector4f("color", particle.Color);
+            texture.Bind();
+            glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glBindVertexArray(0);
         }
@@ -83,15 +83,15 @@ void ParticleGenerator::Draw(){
 GLuint lastUsedParticle = 0;//TODO: check this
 GLuint ParticleGenerator::firstUnusedParticle(){//TODO: have a another structure for unusedParticles.
     // First search from last used particle, this will usually return almost instantly
-    for (GLuint i = lastUsedParticle; i < this->amount; ++i){
-        if (this->particles[i].Life <= 0.0f){
+    for (GLuint i = lastUsedParticle; i < amount; ++i){
+        if (particles[i].Life <= 0.0f){
             lastUsedParticle = i;
             return i;
         }
     }
     // Otherwise, do a linear search
     for (GLuint i = 0; i < lastUsedParticle; ++i){
-        if (this->particles[i].Life <= 0.0f){
+        if (particles[i].Life <= 0.0f){
             lastUsedParticle = i;
             return i;
         }

@@ -85,8 +85,8 @@ void Game::Init(){
     Shader myShader;//TODO: FIX THIS
     myShader    = ResourceManager::GetShader("sprite");
     Renderer    = new SpriteRenderer(myShader);
-    Effects     = new PostProcessor(ResourceManager::GetShader("postprocessing"), this->Width, this->Height);
-    Text        = new TextRenderer(this->Width, this->Height);
+    Effects     = new PostProcessor(ResourceManager::GetShader("postprocessing"), Width, Height);
+    Text        = new TextRenderer(Width, Height);
     Text->Load("Resources/fonts/ocraext.TTF", 24);
 
     //Setup Particle System
@@ -98,18 +98,18 @@ void Game::Init(){
     GameLevel two;
     GameLevel three;
     GameLevel four;
-    one.Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5);
-    two.Load("Resources/levels/two.lvl", this->Width, this->Height * 0.5);
-    three.Load("Resources/levels/three.lvl", this->Width, this->Height * 0.5);
-    four.Load("Resources/levels/four.lvl", this->Width, this->Height * 0.5);
-    this->Levels.push_back(one);
-    this->Levels.push_back(two);
-    this->Levels.push_back(three);
-    this->Levels.push_back(four);
-    this->Level = 0;
+    one.Load("Resources/levels/one.lvl", Width, Height * 0.5);
+    two.Load("Resources/levels/two.lvl", Width, Height * 0.5);
+    three.Load("Resources/levels/three.lvl", Width, Height * 0.5);
+    four.Load("Resources/levels/four.lvl", Width, Height * 0.5);
+    Levels.push_back(one);
+    Levels.push_back(two);
+    Levels.push_back(three);
+    Levels.push_back(four);
+    Level = 0;
     
     // Configure game objects
-    glm::vec2 playerPos = glm::vec2(this->Width / 2 - PLAYER_SIZE.x / 2, this->Height - PLAYER_SIZE.y);
+    glm::vec2 playerPos = glm::vec2(Width / 2 - PLAYER_SIZE.x / 2, Height - PLAYER_SIZE.y);
     glm::vec2 ballPos = playerPos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2);
     Player  = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
     Ball    = new BallObject(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::GetTexture("face"));
@@ -121,13 +121,13 @@ void Game::Init(){
 
 void Game::Update(GLfloat dt){
     // Update objects
-    Ball->Move(dt, this->Width);
+    Ball->Move(dt, Width);
     // Check for collisions
     DoCollisions();
     // Update particles
     Particles->Update(dt, *Ball, 2, glm::vec2(Ball->Radius / 2));
     // Update PowerUps
-    this->UpdatePowerUps(dt);
+    UpdatePowerUps(dt);
     //slowly get shake time back to zero
     if (ShakeTime > 0.0f){
         ShakeTime -= dt;
@@ -135,57 +135,54 @@ void Game::Update(GLfloat dt){
             Effects->Shake = false;
     }
     // Check loss condition
-    if (Ball->Position.y >= this->Height){ // Did ball reach bottom edge?
-        --this->Lives;
+    if (Ball->Position.y >= Height){ // Did ball reach bottom edge?
+        --Lives;
         // Did the player lose all his lives? : Game over
-        if (this->Lives == 0){
-            this->ResetLevel();
-            this->State = GAME_MENU;
+        if (Lives == 0){
+            ResetLevel();
+            State = GAME_MENU;
         }
-        this->ResetPlayer();
+        ResetPlayer();
     }
     // Check win condition
-    if (this->State == GAME_ACTIVE && this->Levels[this->Level].IsCompleted()){
-        this->ResetLevel();
-        this->ResetPlayer();
+    if (State == GAME_ACTIVE && Levels[Level].IsCompleted()){
+        ResetLevel();
+        ResetPlayer();
         Effects->Chaos = GL_TRUE;
-        this->State = GAME_WIN;
+        State = GAME_WIN;
     }
 }
 
 void Game::ProcessInput(GLfloat dt){
-    if (this->State == GAME_MENU){
-        if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
-        {
-            this->State = GAME_ACTIVE;
-            this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
+    if (State == GAME_MENU){
+        if (Keys[GLFW_KEY_ENTER] && !KeysProcessed[GLFW_KEY_ENTER]){
+            State = GAME_ACTIVE;
+            KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
         }
-        if (this->Keys[GLFW_KEY_W] && !this->KeysProcessed[GLFW_KEY_W])
+        if (Keys[GLFW_KEY_W] && !KeysProcessed[GLFW_KEY_W]){
+            Level = (Level + 1) % 4;
+            KeysProcessed[GLFW_KEY_W] = GL_TRUE;
+        }if (Keys[GLFW_KEY_S] && !KeysProcessed[GLFW_KEY_S])
         {
-            this->Level = (this->Level + 1) % 4;
-            this->KeysProcessed[GLFW_KEY_W] = GL_TRUE;
-        }
-        if (this->Keys[GLFW_KEY_S] && !this->KeysProcessed[GLFW_KEY_S])
-        {
-            if (this->Level > 0)
-                --this->Level;
+            if (Level > 0)
+                --Level;
             else
-                this->Level = 3;
-            this->KeysProcessed[GLFW_KEY_S] = GL_TRUE;
+                Level = 3;
+            KeysProcessed[GLFW_KEY_S] = GL_TRUE;
         }
     }
-    if (this->State == GAME_WIN){
-        if (this->Keys[GLFW_KEY_ENTER])
+    if (State == GAME_WIN){
+        if (Keys[GLFW_KEY_ENTER])
         {
-            this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
+            KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
             Effects->Chaos = GL_FALSE;
-            this->State = GAME_MENU;
+            State = GAME_MENU;
         }
     }
-    if (this->State == GAME_ACTIVE){
+    if (State == GAME_ACTIVE){
         GLfloat velocity = PLAYER_VELOCITY * dt;
         // Move playerboard
-        if (this->Keys[GLFW_KEY_A])
+        if (Keys[GLFW_KEY_A])
         {
             if (Player->Position.x >= 0)
             {
@@ -194,16 +191,16 @@ void Game::ProcessInput(GLfloat dt){
                     Ball->Position.x -= velocity;
             }
         }
-        if (this->Keys[GLFW_KEY_D])
+        if (Keys[GLFW_KEY_D])
         {
-            if (Player->Position.x <= this->Width - Player->Size.x)
+            if (Player->Position.x <= Width - Player->Size.x)
             {
                 Player->Position.x += velocity;
                 if (Ball->Stuck)
                     Ball->Position.x += velocity;
             }
         }
-        if (this->Keys[GLFW_KEY_SPACE])
+        if (Keys[GLFW_KEY_SPACE])
             Ball->Stuck = GL_FALSE;
     }
 }
@@ -211,18 +208,18 @@ void Game::ProcessInput(GLfloat dt){
 void Game::Render(){
     Texture2D myTexture;
     myTexture = ResourceManager::GetTexture("background");//TODO:move this into Init
-    if (this->State == GAME_ACTIVE || this->State == GAME_MENU || this->State == GAME_WIN){
+    if (State == GAME_ACTIVE || State == GAME_MENU || State == GAME_WIN){
         // Begin rendering to postprocessing quad
         Effects->BeginRender();
         
             // Draw background
-            Renderer->DrawSprite(myTexture,glm::vec2(0, 0),glm::vec2(this->Width,this->Height),0.0f);
+            Renderer->DrawSprite(myTexture,glm::vec2(0, 0),glm::vec2(Width, Height),0.0f);
             // Draw level
-            this->Levels[this->Level].Draw(*Renderer);
+            Levels[Level].Draw(*Renderer);
             // Draw player
             Player->Draw(*Renderer);
             // Draw PowerUps
-            for (PowerUp &powerUp : this->PowerUps)
+            for (PowerUp &powerUp : PowerUps)
                 if (!powerUp.Destroyed)
                     powerUp.Draw(*Renderer);
             // Draw particles
@@ -239,33 +236,33 @@ void Game::Render(){
         std::string ss(std::to_string(Lives));
         Text->RenderText("Lives:" + ss, 5.0f, 5.0f, 1.0f);
     }
-    if (this->State == GAME_MENU){
-        Text->RenderText("Press ENTER to start", 250.0f, this->Height / 2, 1.0f);
-        Text->RenderText("Press W or S to select level", 245.0f, this->Height / 2 + 20.0f, 0.75f);
+    if (State == GAME_MENU){
+        Text->RenderText("Press ENTER to start", 250.0f, Height / 2, 1.0f);
+        Text->RenderText("Press W or S to select level", 245.0f, Height / 2 + 20.0f, 0.75f);
     }
-    if (this->State == GAME_WIN){
-        Text->RenderText("You WON!!!", 320.0f, this->Height / 2 - 20.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-        Text->RenderText("Press ENTER to retry or ESC to quit", 130.0f, this->Height / 2, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+    if (State == GAME_WIN){
+        Text->RenderText("You WON!!!", 320.0f, Height / 2 - 20.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+        Text->RenderText("Press ENTER to retry or ESC to quit", 130.0f, Height / 2, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f));
     }
 }
 
 void Game::ResetLevel(){
-    if (this->Level == 0)
-        this->Levels[0].Load("Resources/levels/one.lvl", this->Width, this->Height * 0.5f);
-    else if (this->Level == 1)
-        this->Levels[1].Load("Resources/levels/two.lvl", this->Width, this->Height * 0.5f);
-    else if (this->Level == 2)
-        this->Levels[2].Load("Resources/levels/three.lvl", this->Width, this->Height * 0.5f);
-    else if (this->Level == 3)
-        this->Levels[3].Load("Resources/levels/four.lvl", this->Width, this->Height * 0.5f);
+    if (Level == 0)
+        Levels[0].Load("Resources/levels/one.lvl", Width, Height * 0.5f);
+    else if (Level == 1)
+        Levels[1].Load("Resources/levels/two.lvl", Width, Height * 0.5f);
+    else if (Level == 2)
+        Levels[2].Load("Resources/levels/three.lvl", Width, Height * 0.5f);
+    else if (Level == 3)
+        Levels[3].Load("Resources/levels/four.lvl", Width, Height * 0.5f);
     //Reset lives
-    this->Lives = 3;
+    Lives = 3;
 }
 
 void Game::ResetPlayer(){
     // Reset player/ball stats
     Player->Size = PLAYER_SIZE;
-    Player->Position = glm::vec2(this->Width / 2 - PLAYER_SIZE.x / 2, this->Height - PLAYER_SIZE.y);
+    Player->Position = glm::vec2(Width / 2 - PLAYER_SIZE.x / 2, Height - PLAYER_SIZE.y);
     Ball->Reset(Player->Position + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -(BALL_RADIUS * 2)), INITIAL_BALL_VELOCITY);
     // Also disable all active powerups
     Effects->Chaos = Effects->Confuse = GL_FALSE;
@@ -275,7 +272,7 @@ void Game::ResetPlayer(){
 }
 
 void Game::DoCollisions(){
-    for (GameObject &box : this->Levels[this->Level].Bricks){
+    for (GameObject &box : Levels[Level].Bricks){
         if (!box.Destroyed){
             //Ball - brick collisions
             Collision collision = CheckCollision(*Ball, box);
@@ -283,7 +280,7 @@ void Game::DoCollisions(){
                 // Destroy block if not solid or Passtrhough powerup not enabled
                 if (!(Ball->PassThrough && !box.IsSolid)){
                     box.Destroyed = GL_TRUE;
-                    this->SpawnPowerUps(box);
+                    SpawnPowerUps(box);
                 } else {   // if block is solid, enable shake effect
                     ShakeTime = 0.05f;
                     Effects->Shake = true;
@@ -336,15 +333,15 @@ void Game::DoCollisions(){
             }
             
             //check if it hits Bottom Edge
-            if (Ball->Position.y >= this->Height){ // Did ball reach bottom edge?
-                this->ResetLevel();
-                this->ResetPlayer();
+            if (Ball->Position.y >= Height){ // Did ball reach bottom edge?
+                ResetLevel();
+                ResetPlayer();
             }
         }
     }
     for (PowerUp &powerUp : PowerUps){
         if (!powerUp.Destroyed){
-            if (powerUp.Position.y >= this->Height)
+            if (powerUp.Position.y >= Height)
                 powerUp.Destroyed = GL_TRUE;
             if (CheckCollision(*Player, powerUp)){    // Collided with player, now activate powerup
                 ActivatePowerUp(powerUp);

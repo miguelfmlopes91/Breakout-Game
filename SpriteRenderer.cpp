@@ -18,12 +18,12 @@
 
 
 SpriteRenderer::SpriteRenderer(Shader &shader){
-    this->shader = shader;
+    _shader = shader;
     this->initRenderData();
 }
 
 SpriteRenderer::~SpriteRenderer(){
-    glDeleteVertexArrays(1, &this->quadVAO);
+    glDeleteVertexArrays(1, &_quadVAO);
 }
 
 void SpriteRenderer::DrawSprite(Texture2D &texture,
@@ -32,7 +32,7 @@ void SpriteRenderer::DrawSprite(Texture2D &texture,
                                 GLfloat rotate,
                                 glm::vec3 color){
     // Prepare transformations
-    this->shader.Use();
+    _shader.Use();
     glm::mat4 model = {
         
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -48,15 +48,15 @@ void SpriteRenderer::DrawSprite(Texture2D &texture,
     
     model = glm::scale(model, glm::vec3(size, 1.0f)); // Last scale
     
-    this->shader.SetMatrix4("model", model);
+    _shader.SetMatrix4("model", model);
     
     // Render textured quad
-    this->shader.SetVector3f("spriteColor", color);
+    _shader.SetVector3f("spriteColor", color);
     
     glActiveTexture(GL_TEXTURE0);
     texture.Bind();
     
-    glBindVertexArray(this->quadVAO);
+    glBindVertexArray(_quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }
@@ -75,13 +75,13 @@ void SpriteRenderer::initRenderData(){
         1.0f, 0.0f, 1.0f, 0.0f
     };
     
-    glGenVertexArrays(1, &this->quadVAO);
+    glGenVertexArrays(1, &_quadVAO);
     glGenBuffers(1, &VBO);
     
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    glBindVertexArray(this->quadVAO);
+    glBindVertexArray(_quadVAO);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
