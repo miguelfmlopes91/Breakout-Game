@@ -46,5 +46,5 @@ GameObject::GameObject(glm::vec2 pos,
 }
 
 void GameObject::Draw(SpriteRenderer &renderer){
-    renderer.DrawSprite(this->Sprite, this->Position, this->Size, this->Rotation, this->Color);
+    renderer.DrawSprite(Sprite, Position, Size, Rotation, Color);
 }

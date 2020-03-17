@@ -19,7 +19,7 @@
 
 SpriteRenderer::SpriteRenderer(Shader &shader){
     _shader = shader;
-    this->initRenderData();
+    initRenderData();
 }
 
 SpriteRenderer::~SpriteRenderer(){

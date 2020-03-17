@@ -16,31 +16,31 @@ BallObject::BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, Textur
 
 glm::vec2 BallObject::Move(GLfloat dt, GLuint window_width){
     // If not stuck to player board
-    if (!this->Stuck){
+    if (!Stuck){
         // Move the ball
-        this->Position += this->Velocity * dt;
+        Position += Velocity * dt;
         // Then check if outside window bounds and if so, reverse velocity and restore at correct position
-        if (this->Position.x <= 0.0f){
-            this->Velocity.x = -this->Velocity.x;
-            this->Position.x = 0.0f;
-        }else if (this->Position.x + this->Size.x >= window_width){
-            this->Velocity.x = -this->Velocity.x;
-            this->Position.x = window_width - this->Size.x;
+        if (Position.x <= 0.0f){
+            Velocity.x = -Velocity.x;
+            Position.x = 0.0f;
+        }else if (Position.x + Size.x >= window_width){
+            Velocity.x = -Velocity.x;
+            Position.x = window_width - Size.x;
         }
         //if it hits the top
-        if (this->Position.y <= 0.0f){
-            this->Velocity.y = -this->Velocity.y;
-            this->Position.y = 0.0f;
+        if (Position.y <= 0.0f){
+            Velocity.y = -Velocity.y;
+            Position.y = 0.0f;
         }
     }
-    return this->Position;
+    return Position;
 }
 
 // Resets the ball to initial Stuck Position (if ball is outside window bounds)
 void BallObject::Reset(glm::vec2 position, glm::vec2 velocity){
-    this->Position = position;
-    this->Velocity = velocity;
-    this->Stuck = GL_TRUE;
-    this->Sticky = GL_FALSE;
-    this->PassThrough = GL_FALSE;
+    Position = position;
+    Velocity = velocity;
+    Stuck = GL_TRUE;
+    Sticky = GL_FALSE;
+    PassThrough = GL_FALSE;
 }
