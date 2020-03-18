@@ -19,12 +19,12 @@
 
 TextRenderer::TextRenderer(GLuint width, GLuint height){
     // Load and configure shader
-    TextShader = ResourceManager::LoadShader("Resources/shaders/textshader.vs",
+    _textShader = ResourceManager::LoadShader("Resources/shaders/textshader.vs",
                                                    "Resources/shaders/textshader.frag",
                                                    nullptr,
                                                    "text");
-    TextShader.SetMatrix4("projection", glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f), GL_TRUE);
-    TextShader.SetInteger("text", 0);
+    _textShader.SetMatrix4("projection", glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f), GL_TRUE);
+    _textShader.SetInteger("text", 0);
     // Configure VAO/VBO for texture quads
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -37,9 +37,9 @@ TextRenderer::TextRenderer(GLuint width, GLuint height){
     glBindVertexArray(0);
 }
 
-void TextRenderer::Load(std::string font, GLuint fontSize){
+void TextRenderer::load(std::string font, GLuint fontSize){
     // First clear the previously loaded Characters
-    Characters.clear();
+    _characters.clear();
     // Then initialize and load the FreeType library
     FT_Library ft;
     if (FT_Init_FreeType(&ft)) // All functions return a value different than 0 whenever an error occurred
@@ -87,7 +87,7 @@ void TextRenderer::Load(std::string font, GLuint fontSize){
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
             static_cast<GLuint>(face->glyph->advance.x)
         };
-        Characters.insert(std::pair<GLchar, Character>(c, character));
+        _characters.insert(std::pair<GLchar, Character>(c, character));
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     // Destroy FreeType once we're finished
@@ -95,20 +95,20 @@ void TextRenderer::Load(std::string font, GLuint fontSize){
     FT_Done_FreeType(ft);
 }
 
-void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){
+void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){
     // Activate corresponding render state
-    TextShader.Use();
-    TextShader.SetVector3f("textColor", color);
+    _textShader.Use();
+    _textShader.SetVector3f("textColor", color);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
     // Iterate through all characters
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++){
-        Character ch = Characters[*c];
+        Character ch = _characters[*c];
 
         GLfloat xpos = x + ch.Bearing.x * scale;
-        GLfloat ypos = y + (Characters['H'].Bearing.y - ch.Bearing.y) * scale;//calculate the vertical offset as the distance a glyph is pushed downwards from the top of the glyph space
+        GLfloat ypos = y + (_characters['H'].Bearing.y - ch.Bearing.y) * scale;//calculate the vertical offset as the distance a glyph is pushed downwards from the top of the glyph space
 
         GLfloat w = ch.Size.x * scale;
         GLfloat h = ch.Size.y * scale;

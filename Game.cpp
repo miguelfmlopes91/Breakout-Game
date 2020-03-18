@@ -203,20 +203,20 @@ void Game::render(){
         // Begin rendering to postprocessing quad
         _effects->BeginRender();
         
-            // Draw background
-            _renderer->DrawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
-            // Draw level
-            _levelsVector[_level].Draw(*_renderer);
-            // Draw player
-            _player->Draw(*_renderer);
-            // Draw PowerUps
-            for (PowerUp &powerUp : _powerUpsVector)
-                if (!powerUp.Destroyed)
-                    powerUp.Draw(*_renderer);
-            // Draw particles
-            _particles->Draw();
-            // Draw ball
-            _ball->Draw(*_renderer);
+        // Draw background
+        _renderer->DrawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
+        // Draw level
+        _levelsVector[_level].Draw(*_renderer);
+        // Draw player
+        _player->Draw(*_renderer);
+        // Draw PowerUps
+        for (PowerUp &powerUp : _powerUpsVector)
+            if (!powerUp.Destroyed)
+                powerUp.Draw(*_renderer);
+        // Draw particles
+        _particles->Draw();
+        // Draw ball
+        _ball->Draw(*_renderer);
 
         
         // End rendering to postprocessing quad
@@ -342,7 +342,6 @@ void Game::doCollisions(){
         }
     }
 }
-
 
 void Game::spawnPowerUps(GameObject &block){//TODO: Review this.
     if (shouldSpawn(75)){ // 1 in 75 chance
