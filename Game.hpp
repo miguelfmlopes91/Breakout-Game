@@ -35,7 +35,6 @@ enum GameState {
     GAME_MENU,
     GAME_WIN
 };
-
 // Represents the direction of a vector in the game
 enum Direction {
     UP,
@@ -55,39 +54,38 @@ public:
     ~Game();
     
     // Initialize game state (load all shaders/textures/levels)
-    void Init();
+    void init();
     // GameLoop
-    void ProcessInput(GLfloat dt);
-    void Update(GLfloat dt);
-    void Render();
-    // Reset
-    void ResetLevel();
-    void ResetPlayer();
+    void processInput(GLfloat dt);
+    void update(GLfloat dt);
+    void render();
+    // Game state
+    GLboolean               _keysArray[1024];
+private:
+    void doCollisions();
+    void spawnPowerUps(GameObject &block);
+    void updatePowerUps(GLfloat dt);
+    void activatePowerUp(PowerUp &powerUp);
+    void resetLevel();
+    void resetPlayer();
     
     // Game state
-    GameState               State;
-    GLboolean               Keys[1024];
-    GLuint                  Width, Height;
-    std::vector<GameLevel>  Levels;
-    GLuint                  Level;
-    std::vector<PowerUp>    PowerUps;
-    GLuint                  Lives;
-    GLboolean               KeysProcessed[1024];
-
-private:
-    void DoCollisions();
-    void SpawnPowerUps(GameObject &block);
-    void UpdatePowerUps(GLfloat dt);
-    void ActivatePowerUp(PowerUp &powerUp);
-    
+    GameState               _state;
+    GLuint                  _width, _height;
+    std::vector<GameLevel>  _levelsVector;
+    GLuint                  _level;
+    std::vector<PowerUp>    _powerUpsVector;
+    GLuint                  _lives;
+    GLboolean               _KeysProcessed[1024];
     // Game-related State data
-    SpriteRenderer      *Renderer;
-    GameObject          *Player;
-    BallObject          *Ball;
-    ParticleGenerator   *Particles;
-    PostProcessor       *Effects;
-    TextRenderer        *Text;
-    GLfloat             ShakeTime = 0.0f;
+    SpriteRenderer      *_renderer;
+    GameObject          *_player;
+    BallObject          *_ball;
+    ParticleGenerator   *_particles;
+    PostProcessor       *_effects;
+    TextRenderer        *_text;
+    //Shake animation time
+    GLfloat             _shakeTime = 0.0f;
 };
 
 #endif

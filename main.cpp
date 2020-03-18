@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     // Initialize game
-    Breakout.Init();
+    Breakout.init();
     
     // DeltaTime variables
     GLfloat deltaTime = 0.0f;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
         
         //deltaTime = 0.001f;
         // Manage user input
-        Breakout.ProcessInput(deltaTime);
+        Breakout.processInput(deltaTime);
         
         // Calculate delta time
         GLfloat currentFrame = glfwGetTime();
@@ -92,12 +92,12 @@ int main(int argc, char *argv[]){
         lastFrame = currentFrame;
         
         // Update Game state
-        Breakout.Update(deltaTime);
+        Breakout.update(deltaTime);
         
         // Render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        Breakout.Render();
+        Breakout.render();
         
         glfwSwapBuffers(window);
     }
@@ -116,9 +116,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
-            Breakout.Keys[key] = GL_TRUE;
+            Breakout._keysArray[key] = GL_TRUE;
         else if (action == GLFW_RELEASE)
-            Breakout.Keys[key] = GL_FALSE;
+            Breakout._keysArray[key] = GL_FALSE;
     }
 }
 
