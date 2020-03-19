@@ -18,14 +18,14 @@
 
 
 GameObject::GameObject()
-                        : Position(0, 0),
-                        Size(1, 1),
-                        Velocity(0.0f),
-                        Color(1.0f),
-                        Rotation(0.0f),
-                        Sprite(),
-                        IsSolid(false),
-                        Destroyed(false) {
+                        : _position(0, 0),
+                        _size(1, 1),
+                        _velocity(0.0f),
+                        _color(1.0f),
+                        _rotation(0.0f),
+                        _sprite(),
+                        _isSolid(false),
+                        _destroyed(false) {
     
 }
 
@@ -34,17 +34,17 @@ GameObject::GameObject(glm::vec2 pos,
                        Texture2D sprite,
                        glm::vec3 color,
                        glm::vec2 velocity)
-                                            : Position(pos),
-                                            Size(size),
-                                            Velocity(velocity),
-                                            Color(color),
-                                            Rotation(0.0f),
-                                            Sprite(sprite),
-                                            IsSolid(false),
-                                            Destroyed(false) {
+                                            : _position(pos),
+                                            _size(size),
+                                            _velocity(velocity),
+                                            _color(color),
+                                            _rotation(0.0f),
+                                            _sprite(sprite),
+                                            _isSolid(false),
+                                            _destroyed(false) {
     
 }
 
 void GameObject::Draw(SpriteRenderer &renderer){
-    renderer.DrawSprite(Sprite, Position, Size, Rotation, Color);
+    renderer.DrawSprite(_sprite, _position, _size, _rotation, _color);
 }

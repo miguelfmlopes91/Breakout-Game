@@ -24,12 +24,12 @@ public:
     PowerUp(std::string type, glm::vec3 color, GLfloat duration,
             glm::vec2 position, Texture2D texture)
         : GameObject(position, SIZE, texture, color, VELOCITY),
-          Type(type), Duration(duration), Activated()
+          _type(type), _duration(duration), _activated()
     { }
     
     // PowerUp State
-    std::string Type;
-    GLfloat     Duration;
-    GLboolean   Activated;
+    std::string _type;
+    GLfloat     _duration;
+    GLboolean   _activated;
 };
 

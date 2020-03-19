@@ -41,13 +41,15 @@ public:
     // Draw sprite
     virtual void Draw(SpriteRenderer &renderer);
     // Object state
-    glm::vec2   Position, Size, Velocity;
-    glm::vec3   Color;
-    GLfloat     Rotation;
-    GLboolean   IsSolid;
-    GLboolean   Destroyed;
+    glm::vec2   _position;
+    glm::vec2   _size;
+    glm::vec2   _velocity;
+    glm::vec3   _color;
+    GLfloat     _rotation;
+    GLboolean   _isSolid;
+    GLboolean   _destroyed;
     // Render state
-    Texture2D   Sprite;
+    Texture2D   _sprite;
 };
 
 #endif
