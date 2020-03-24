@@ -32,7 +32,7 @@ void SpriteRenderer::DrawSprite(Texture2D &texture,
                                 GLfloat rotate,
                                 glm::vec3 color){
     // Prepare transformations
-    _shader.Use();
+    _shader.use();
     glm::mat4 model = {
         
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -48,10 +48,10 @@ void SpriteRenderer::DrawSprite(Texture2D &texture,
     
     model = glm::scale(model, glm::vec3(size, 1.0f)); // Last scale
     
-    _shader.SetMatrix4("model", model);
+    _shader.setMatrix4("model", model);
     
     // Render textured quad
-    _shader.SetVector3f("spriteColor", color);
+    _shader.setVector3f("spriteColor", color);
     
     glActiveTexture(GL_TEXTURE0);
     texture.Bind();

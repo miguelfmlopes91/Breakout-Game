@@ -60,10 +60,10 @@ void Game::init(){
 
     // Configure shaders
     glm::mat4 projection = glm::ortho(0.0f,static_cast<GLfloat>(_width),static_cast<GLfloat>(_height),0.0f, -1.0f, 1.0f);
-    ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
-    ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
-    ResourceManager::GetShader("particle").Use().SetInteger("sprite", 0);
-    ResourceManager::GetShader("particle").SetMatrix4("projection", projection);
+    ResourceManager::GetShader("sprite").use().setInteger("image", 0);
+    ResourceManager::GetShader("sprite").setMatrix4("projection", projection);
+    ResourceManager::GetShader("particle").use().setInteger("sprite", 0);
+    ResourceManager::GetShader("particle").setMatrix4("projection", projection);
     // Load textures
     ResourceManager::LoadTexture("Resources/background.jpg", GL_FALSE, "background");
     ResourceManager::LoadTexture("Resources/awesomeface.png", GL_TRUE, "face");

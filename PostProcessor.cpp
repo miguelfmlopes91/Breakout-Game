@@ -38,7 +38,7 @@ PostProcessor::PostProcessor(Shader shader, GLuint width, GLuint height)
     
     // Initialize render data and uniforms
     initRenderData();
-    PostProcessingShader.SetInteger("scene", 0, GL_TRUE);
+        PostProcessingShader.setInteger("scene", 0, GL_TRUE);
     GLfloat offset = 1.0f / 300.0f;
     GLfloat offsets[9][2] = {
         { -offset,  offset  },  // top-left
@@ -82,11 +82,11 @@ void PostProcessor::EndRender(){
 
 void PostProcessor::Render(GLfloat time){
     // Set uniforms/options
-    PostProcessingShader.Use();
-    PostProcessingShader.SetFloat("time", time);
-    PostProcessingShader.SetInteger("confuse", Confuse);
-    PostProcessingShader.SetInteger("chaos", Chaos);
-    PostProcessingShader.SetInteger("shake", Shake);
+    PostProcessingShader.use();
+    PostProcessingShader.setFloat("time", time);
+    PostProcessingShader.setInteger("confuse", Confuse);
+    PostProcessingShader.setInteger("chaos", Chaos);
+    PostProcessingShader.setInteger("shake", Shake);
     // Render textured quad
     glActiveTexture(GL_TEXTURE0);
     Texture.Bind();

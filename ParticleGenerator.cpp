@@ -63,11 +63,11 @@ void ParticleGenerator::Update(GLfloat dt, GameObject &object, GLuint newParticl
 void ParticleGenerator::Draw(){
     // Use additive blending (GL_ONE)to give it a 'glow' effect
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    shader.Use();
+    shader.use();
     for (Particle particle : particles){
         if (particle.Life > 0.0f){
-            shader.SetVector2f("offset", particle.Position);
-            shader.SetVector4f("color", particle.Color);
+            shader.setVector2f("offset", particle.Position);
+            shader.setVector4f("color", particle.Color);
             texture.Bind();
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
