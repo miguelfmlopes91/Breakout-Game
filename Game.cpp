@@ -204,7 +204,7 @@ void Game::render(){
         _effects->BeginRender();
         
         // Draw background
-        _renderer->DrawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
+        _renderer->drawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
         // Draw level
         _levelsVector[_level].Draw(*_renderer);
         // Draw player
