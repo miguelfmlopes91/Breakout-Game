@@ -26,7 +26,7 @@ SpriteRenderer::~SpriteRenderer(){
     glDeleteVertexArrays(1, &_quadVAO);
 }
 
-void SpriteRenderer::DrawSprite(Texture2D &texture,
+void SpriteRenderer::drawSprite(Texture2D &texture,
                                 glm::vec2 position,
                                 glm::vec2 size,
                                 GLfloat rotate,

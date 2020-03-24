@@ -20,7 +20,6 @@
 // were too specific for within GameObject alone.
 class BallObject : public GameObject{
 public:
-
     // Constructor(s)
     BallObject();
     BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, Texture2D sprite);

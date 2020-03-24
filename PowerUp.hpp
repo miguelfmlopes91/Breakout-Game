@@ -18,6 +18,7 @@
 const glm::vec2 SIZE(60, 20);
 const glm::vec2 VELOCITY(0.0f, 150.0f);
 
+///could be a Struct.
 class PowerUp : public GameObject{
 public:
     // Constructor
