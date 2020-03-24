@@ -35,9 +35,9 @@ public:
     // Constructor
     ParticleGenerator(Shader shader, Texture2D texture, GLuint amount);
     // Update all particles
-    void Update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset = glm::vec2(0.0f, 0.0f));
+    void update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset = glm::vec2(0.0f, 0.0f));
     // Render all particles
-    void Draw();
+    void draw();
 private:
     // State
     std::vector<Particle> particles;

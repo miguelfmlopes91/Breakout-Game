@@ -94,10 +94,10 @@ void Game::init(){
     GameLevel two;
     GameLevel three;
     GameLevel four;
-    one.Load("Resources/levels/one.lvl", _width, _height * 0.5);
-    two.Load("Resources/levels/two.lvl", _width, _height * 0.5);
-    three.Load("Resources/levels/three.lvl", _width, _height * 0.5);
-    four.Load("Resources/levels/four.lvl", _width, _height * 0.5);
+    one.load("Resources/levels/one.lvl", _width, _height * 0.5);
+    two.load("Resources/levels/two.lvl", _width, _height * 0.5);
+    three.load("Resources/levels/three.lvl", _width, _height * 0.5);
+    four.load("Resources/levels/four.lvl", _width, _height * 0.5);
     _levelsVector.push_back(one);
     _levelsVector.push_back(two);
     _levelsVector.push_back(three);
@@ -121,7 +121,7 @@ void Game::update(GLfloat dt){
     // Check for collisions
     doCollisions();
     // Update particles
-    _particles->Update(dt, *_ball, 2, glm::vec2(_ball->_radius / 2));
+    _particles->update(dt, *_ball, 2, glm::vec2(_ball->_radius / 2));
     // Update PowerUps
     updatePowerUps(dt);
     //slowly get shake time back to zero
@@ -141,7 +141,7 @@ void Game::update(GLfloat dt){
         resetPlayer();
     }
     // Check win condition
-    if (_state == GAME_ACTIVE && _levelsVector[_level].IsCompleted()){
+    if (_state == GAME_ACTIVE && _levelsVector[_level].isCompleted()){
         resetLevel();
         resetPlayer();
         _effects->Chaos = GL_TRUE;
@@ -206,17 +206,17 @@ void Game::render(){
         // Draw background
         _renderer->drawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
         // Draw level
-        _levelsVector[_level].Draw(*_renderer);
+        _levelsVector[_level].draw(*_renderer);
         // Draw player
-        _player->Draw(*_renderer);
+        _player->draw(*_renderer);
         // Draw PowerUps
         for (PowerUp &powerUp : _powerUpsVector)
             if (!powerUp._destroyed)
-                powerUp.Draw(*_renderer);
+                powerUp.draw(*_renderer);
         // Draw particles
-        _particles->Draw();
+        _particles->draw();
         // Draw ball
-        _ball->Draw(*_renderer);
+        _ball->draw(*_renderer);
 
         
         // End rendering to postprocessing quad
@@ -239,13 +239,13 @@ void Game::render(){
 
 void Game::resetLevel(){
     if (_level == 0)
-        _levelsVector[0].Load("Resources/levels/one.lvl", _width, _height * 0.5f);
+        _levelsVector[0].load("Resources/levels/one.lvl", _width, _height * 0.5f);
     else if (_level == 1)
-        _levelsVector[1].Load("Resources/levels/two.lvl", _width, _height * 0.5f);
+        _levelsVector[1].load("Resources/levels/two.lvl", _width, _height * 0.5f);
     else if (_level == 2)
-        _levelsVector[2].Load("Resources/levels/three.lvl", _width, _height * 0.5f);
+        _levelsVector[2].load("Resources/levels/three.lvl", _width, _height * 0.5f);
     else if (_level == 3)
-        _levelsVector[3].Load("Resources/levels/four.lvl", _width, _height * 0.5f);
+        _levelsVector[3].load("Resources/levels/four.lvl", _width, _height * 0.5f);
     //Reset lives
     _lives = 3;
 }
@@ -263,7 +263,7 @@ void Game::resetPlayer(){
 }
 
 void Game::doCollisions(){
-    for (GameObject &box : _levelsVector[_level].Bricks){
+    for (GameObject &box : _levelsVector[_level]._bricksVector){
         if (!box._destroyed){
             //Ball - brick collisions
             Collision collision = checkCollision(*_ball, box);

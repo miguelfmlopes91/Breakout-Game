@@ -37,7 +37,7 @@ public:
                glm::vec2 velocity = glm::vec2(0.0f, 0.0f));
     //TODO: virtual dtor
     // Draw sprite
-    virtual void Draw(SpriteRenderer &renderer);
+    virtual void draw(SpriteRenderer &renderer);
     // Object state
     glm::vec2   _position;
     glm::vec2   _size;

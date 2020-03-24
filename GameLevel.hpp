@@ -34,14 +34,14 @@ public:
     // Constructor
     GameLevel() { }
     // Loads level from file
-    void      Load(const GLchar *file, GLuint levelWidth, GLuint levelHeight);
+    void      load(const GLchar *file, GLuint levelWidth, GLuint levelHeight);
     // Render level
-    void      Draw(SpriteRenderer &renderer);
+    void      draw(SpriteRenderer &renderer);
     // Check if the level is completed (all non-solid tiles are destroyed)
-    GLboolean IsCompleted();
+    GLboolean isCompleted();
 public:
     // Level state
-    std::vector<GameObject> Bricks;
+    std::vector<GameObject> _bricksVector;
 private:
     // Initialize level from tile data
     void      init(std::vector<std::vector<GLuint>> tileData, GLuint levelWidth, GLuint levelHeight);

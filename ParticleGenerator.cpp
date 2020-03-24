@@ -42,7 +42,7 @@ void ParticleGenerator::init(){
 
 //Then in each frame, we spawn several new particles with starting values
 //and then for each particle that is (still) alive we update their values.
-void ParticleGenerator::Update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset){
+void ParticleGenerator::update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset){
     // Add new particles
     for (GLuint i = 0; i < newParticles; ++i){
         int unusedParticle = firstUnusedParticle();
@@ -60,7 +60,7 @@ void ParticleGenerator::Update(GLfloat dt, GameObject &object, GLuint newParticl
 }
 
 // Render all particles
-void ParticleGenerator::Draw(){
+void ParticleGenerator::draw(){
     // Use additive blending (GL_ONE)to give it a 'glow' effect
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     shader.use();
