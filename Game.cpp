@@ -201,7 +201,7 @@ void Game::render(){
     myTexture = ResourceManager::getTexture("background");//TODO:move this into Init
     if (_state == GAME_ACTIVE || _state == GAME_MENU || _state == GAME_WIN){
         // Begin rendering to postprocessing quad
-        _effects->BeginRender();
+        _effects->beginRender();
         
         // Draw background
         _renderer->drawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
@@ -220,9 +220,9 @@ void Game::render(){
 
         
         // End rendering to postprocessing quad
-        _effects->EndRender();
+        _effects->endRender();
         // Render postprocessing quad
-        _effects->Render(glfwGetTime());
+        _effects->render(glfwGetTime());
         // Render text (don't include in postprocessing)
         std::string ss(std::to_string(_lives));
         _text->renderText("Lives:" + ss, 5.0f, 5.0f, 1.0f);

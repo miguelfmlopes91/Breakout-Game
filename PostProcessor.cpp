@@ -66,13 +66,13 @@ PostProcessor::PostProcessor(Shader shader, GLuint width, GLuint height)
     glUniform1fv(glGetUniformLocation(PostProcessingShader.ID, "blur_kernel"), 9, blur_kernel);
 }
 
-void PostProcessor::BeginRender(){
+void PostProcessor::beginRender(){
     glBindFramebuffer(GL_FRAMEBUFFER, MSFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void PostProcessor::EndRender(){
+void PostProcessor::endRender(){
     // Now resolve multisampled color-buffer into intermediate FBO to store to texture
     glBindFramebuffer(GL_READ_FRAMEBUFFER, MSFBO);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
@@ -80,7 +80,7 @@ void PostProcessor::EndRender(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // Binds both READ and WRITE framebuffer to default framebuffer
 }
 
-void PostProcessor::Render(GLfloat time){
+void PostProcessor::render(GLfloat time){
     // Set uniforms/options
     PostProcessingShader.use();
     PostProcessingShader.setFloat("time", time);
