@@ -103,7 +103,7 @@ int main(int argc, char *argv[]){
     }
     
     // Delete all resources as loaded using the resource manager
-    ResourceManager::Clear();
+    ResourceManager::clear();
     
     glfwTerminate();
     return 0;

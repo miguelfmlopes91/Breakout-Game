@@ -19,7 +19,7 @@
 
 TextRenderer::TextRenderer(GLuint width, GLuint height){
     // Load and configure shader
-    _textShader = ResourceManager::LoadShader("Resources/shaders/textshader.vs",
+    _textShader = ResourceManager::loadShader("Resources/shaders/textshader.vs",
                                                    "Resources/shaders/textshader.frag",
                                                    nullptr,
                                                    "text");

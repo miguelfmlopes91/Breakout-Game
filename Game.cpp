@@ -54,40 +54,40 @@ Game::~Game(){
 
 void Game::init(){
     // Load shaders
-    ResourceManager::LoadShader("Resources/shaders/sprite.vs", "Resources/shaders/sprite.frag", nullptr, "sprite");
-    ResourceManager::LoadShader("Resources/shaders/particle.vs", "Resources/shaders/particle.frag", nullptr, "particle");
-    ResourceManager::LoadShader("Resources/shaders/post_processing.vs", "Resources/shaders/post_processing.frag", nullptr, "postprocessing");
+    ResourceManager::loadShader("Resources/shaders/sprite.vs", "Resources/shaders/sprite.frag", nullptr, "sprite");
+    ResourceManager::loadShader("Resources/shaders/particle.vs", "Resources/shaders/particle.frag", nullptr, "particle");
+    ResourceManager::loadShader("Resources/shaders/post_processing.vs", "Resources/shaders/post_processing.frag", nullptr, "postprocessing");
 
     // Configure shaders
     glm::mat4 projection = glm::ortho(0.0f,static_cast<GLfloat>(_width),static_cast<GLfloat>(_height),0.0f, -1.0f, 1.0f);
-    ResourceManager::GetShader("sprite").use().setInteger("image", 0);
-    ResourceManager::GetShader("sprite").setMatrix4("projection", projection);
-    ResourceManager::GetShader("particle").use().setInteger("sprite", 0);
-    ResourceManager::GetShader("particle").setMatrix4("projection", projection);
+    ResourceManager::getShader("sprite").use().setInteger("image", 0);
+    ResourceManager::getShader("sprite").setMatrix4("projection", projection);
+    ResourceManager::getShader("particle").use().setInteger("sprite", 0);
+    ResourceManager::getShader("particle").setMatrix4("projection", projection);
     // Load textures
-    ResourceManager::LoadTexture("Resources/background.jpg", GL_FALSE, "background");
-    ResourceManager::LoadTexture("Resources/awesomeface.png", GL_TRUE, "face");
-    ResourceManager::LoadTexture("Resources/block.png", GL_FALSE, "block");
-    ResourceManager::LoadTexture("Resources/block_solid.png", GL_FALSE, "block_solid");
-    ResourceManager::LoadTexture("Resources/paddle.png", true, "paddle");
-    ResourceManager::LoadTexture("Resources/particle.png", GL_TRUE, "particle");
-    ResourceManager::LoadTexture("Resources/PowerUps/powerup_speed.png", GL_TRUE, "powerup_speed");
-    ResourceManager::LoadTexture("Resources/PowerUps/powerup_sticky.png", GL_TRUE, "powerup_sticky");
-    ResourceManager::LoadTexture("Resources/PowerUps/powerup_increase.png", GL_TRUE, "powerup_increase");
-    ResourceManager::LoadTexture("Resources/PowerUps/powerup_confuse.png", GL_TRUE, "powerup_confuse");
-    ResourceManager::LoadTexture("Resources/PowerUps/powerup_chaos.png", GL_TRUE, "powerup_chaos");
-    ResourceManager::LoadTexture("Resources/PowerUps/powerup_passthrough.png", GL_TRUE, "powerup_passthrough");
+    ResourceManager::loadTexture("Resources/background.jpg", GL_FALSE, "background");
+    ResourceManager::loadTexture("Resources/awesomeface.png", GL_TRUE, "face");
+    ResourceManager::loadTexture("Resources/block.png", GL_FALSE, "block");
+    ResourceManager::loadTexture("Resources/block_solid.png", GL_FALSE, "block_solid");
+    ResourceManager::loadTexture("Resources/paddle.png", true, "paddle");
+    ResourceManager::loadTexture("Resources/particle.png", GL_TRUE, "particle");
+    ResourceManager::loadTexture("Resources/PowerUps/powerup_speed.png", GL_TRUE, "powerup_speed");
+    ResourceManager::loadTexture("Resources/PowerUps/powerup_sticky.png", GL_TRUE, "powerup_sticky");
+    ResourceManager::loadTexture("Resources/PowerUps/powerup_increase.png", GL_TRUE, "powerup_increase");
+    ResourceManager::loadTexture("Resources/PowerUps/powerup_confuse.png", GL_TRUE, "powerup_confuse");
+    ResourceManager::loadTexture("Resources/PowerUps/powerup_chaos.png", GL_TRUE, "powerup_chaos");
+    ResourceManager::loadTexture("Resources/PowerUps/powerup_passthrough.png", GL_TRUE, "powerup_passthrough");
     
     // Set render-specific controls
     Shader myShader;//TODO: FIX THIS
-    myShader    = ResourceManager::GetShader("sprite");
+    myShader    = ResourceManager::getShader("sprite");
     _renderer    = new SpriteRenderer(myShader);
-    _effects     = new PostProcessor(ResourceManager::GetShader("postprocessing"), _width, _height);
+    _effects     = new PostProcessor(ResourceManager::getShader("postprocessing"), _width, _height);
     _text        = new TextRenderer(_width, _height);
     _text->load("Resources/fonts/ocraext.TTF", 24);
     //Setup Particle System
-    _particles   = new  ParticleGenerator(ResourceManager::GetShader("particle"),
-                                         ResourceManager::GetTexture("particle"),500);
+    _particles   = new  ParticleGenerator(ResourceManager::getShader("particle"),
+                                         ResourceManager::getTexture("particle"),500);
 
     // Load levels
     GameLevel one;
@@ -107,8 +107,8 @@ void Game::init(){
     // Configure game objects
     glm::vec2 playerPos = glm::vec2(_width / 2 - PLAYER_SIZE.x / 2, _height - PLAYER_SIZE.y);
     glm::vec2 ballPos = playerPos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2);
-    _player  = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("paddle"));
-    _ball    = new BallObject(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::GetTexture("face"));
+    _player  = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::getTexture("paddle"));
+    _ball    = new BallObject(ballPos, BALL_RADIUS, INITIAL_BALL_VELOCITY, ResourceManager::getTexture("face"));
     
     //Effects->Shake = GL_TRUE;
     //Effects->Confuse = GL_TRUE;
@@ -198,7 +198,7 @@ void Game::processInput(GLfloat dt){
 
 void Game::render(){
     Texture2D myTexture;
-    myTexture = ResourceManager::GetTexture("background");//TODO:move this into Init
+    myTexture = ResourceManager::getTexture("background");//TODO:move this into Init
     if (_state == GAME_ACTIVE || _state == GAME_MENU || _state == GAME_WIN){
         // Begin rendering to postprocessing quad
         _effects->BeginRender();
@@ -345,22 +345,22 @@ void Game::doCollisions(){
 
 void Game::spawnPowerUps(GameObject &block){//TODO: Review this.
     if (shouldSpawn(75)){ // 1 in 75 chance
-        _powerUpsVector.push_back(PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f, block._position, ResourceManager::GetTexture("powerup_speed")));
+        _powerUpsVector.push_back(PowerUp("speed", glm::vec3(0.5f, 0.5f, 1.0f), 0.0f, block._position, ResourceManager::getTexture("powerup_speed")));
     }
     if (shouldSpawn(75)){
-        _powerUpsVector.push_back(PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, block._position, ResourceManager::GetTexture("powerup_sticky")));
+        _powerUpsVector.push_back(PowerUp("sticky", glm::vec3(1.0f, 0.5f, 1.0f), 20.0f, block._position, ResourceManager::getTexture("powerup_sticky")));
     }
     if (shouldSpawn(75)){
-        _powerUpsVector.push_back(PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, block._position, ResourceManager::GetTexture("powerup_passthrough")));
+        _powerUpsVector.push_back(PowerUp("pass-through", glm::vec3(0.5f, 1.0f, 0.5f), 10.0f, block._position, ResourceManager::getTexture("powerup_passthrough")));
     }
     if (shouldSpawn(75)){
-        _powerUpsVector.push_back(PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4), 0.0f, block._position, ResourceManager::GetTexture("powerup_increase")));
+        _powerUpsVector.push_back(PowerUp("pad-size-increase", glm::vec3(1.0f, 0.6f, 0.4), 0.0f, block._position, ResourceManager::getTexture("powerup_increase")));
     }
     if (shouldSpawn(15)){ // Negative powerups should spawn more often
-        _powerUpsVector.push_back(PowerUp("confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block._position, ResourceManager::GetTexture("powerup_confuse")));
+        _powerUpsVector.push_back(PowerUp("confuse", glm::vec3(1.0f, 0.3f, 0.3f), 15.0f, block._position, ResourceManager::getTexture("powerup_confuse")));
     }
     if (shouldSpawn(15)){
-        _powerUpsVector.push_back(PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block._position, ResourceManager::GetTexture("powerup_chaos")));
+        _powerUpsVector.push_back(PowerUp("chaos", glm::vec3(0.9f, 0.25f, 0.25f), 15.0f, block._position, ResourceManager::getTexture("powerup_chaos")));
     }
 }
 

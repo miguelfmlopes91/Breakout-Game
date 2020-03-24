@@ -68,7 +68,7 @@ void ParticleGenerator::draw(){
         if (particle.Life > 0.0f){
             shader.setVector2f("offset", particle.Position);
             shader.setVector4f("color", particle.Color);
-            texture.Bind();
+            texture.bind();
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glBindVertexArray(0);

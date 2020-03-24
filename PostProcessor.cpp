@@ -30,7 +30,7 @@ PostProcessor::PostProcessor(Shader shader, GLuint width, GLuint height)
         
     // Also initialize the FBO/texture to blit multisampled color-buffer to; used for shader operations (for postprocessing effects)
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    Texture.Generate(width, height, NULL);
+    Texture.generate(width, height, NULL);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Texture.ID, 0); // Attach texture to framebuffer as its color attachment
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::POSTPROCESSOR: Failed to initialize FBO" << std::endl;
@@ -89,7 +89,7 @@ void PostProcessor::Render(GLfloat time){
     PostProcessingShader.setInteger("shake", Shake);
     // Render textured quad
     glActiveTexture(GL_TEXTURE0);
-    Texture.Bind();
+    Texture.bind();
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);

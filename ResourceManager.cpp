@@ -27,7 +27,7 @@ std::map<std::string, Texture2D>    ResourceManager::_texturesMap;
 std::map<std::string, Shader>       ResourceManager::_shadersMap;
 
 
-Shader ResourceManager::LoadShader(const GLchar *vShaderFile,
+Shader ResourceManager::loadShader(const GLchar *vShaderFile,
                                    const GLchar *fShaderFile,
                                    const GLchar *gShaderFile,
                                    std::string name){
@@ -35,22 +35,22 @@ Shader ResourceManager::LoadShader(const GLchar *vShaderFile,
     return _shadersMap[name];
 }
 
-Shader ResourceManager::GetShader(std::string name){
+Shader ResourceManager::getShader(std::string name){
     return _shadersMap[name];
 }
 
-Texture2D ResourceManager::LoadTexture(const GLchar *file,
+Texture2D ResourceManager::loadTexture(const GLchar *file,
                                        GLboolean alpha,
                                        std::string name){
     _texturesMap[name] = loadTextureFromFile(file, alpha);
     return _texturesMap[name];
 }
 
-Texture2D ResourceManager::GetTexture(std::string name){
+Texture2D ResourceManager::getTexture(std::string name){
     return _texturesMap[name];
 }
 
-void ResourceManager::Clear(){
+void ResourceManager::clear(){
     // (Properly) delete all shaders
     for (auto iter : _shadersMap)
         glDeleteProgram(iter.second.ID);
@@ -115,7 +115,7 @@ Texture2D ResourceManager::loadTextureFromFile(const GLchar *file,
                                            texture.Image_Format == GL_RGBA ?
                                            SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
     // Now generate texture
-    texture.Generate(width, height, image);
+    texture.generate(width, height, image);
     // And finally free image data
     SOIL_free_image_data(image);
     return texture;

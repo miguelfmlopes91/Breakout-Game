@@ -24,9 +24,9 @@ class Texture2D{
 public:
     Texture2D();
     // Generates texture from image data
-    void Generate(GLuint width, GLuint height, unsigned char* data);
+    void generate(GLuint width, GLuint height, unsigned char* data);
     // Binds the texture as the current active GL_TEXTURE_2D texture object
-    void Bind() const;
+    void bind() const;
     
     //TODO: move to private
     // Holds the ID of the texture object, used for all texture operations to reference to this particlar texture
@@ -36,6 +36,7 @@ public:
     // Texture Format
     GLuint Internal_Format; // Format of texture object
     GLuint Image_Format; // Format of loaded image
+private:
     // Texture configuration
     GLuint Wrap_S; // Wrapping mode on S axis
     GLuint Wrap_T; // Wrapping mode on T axis

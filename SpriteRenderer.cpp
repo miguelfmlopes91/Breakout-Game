@@ -54,7 +54,7 @@ void SpriteRenderer::drawSprite(Texture2D &texture,
     _shader.setVector3f("spriteColor", color);
     
     glActiveTexture(GL_TEXTURE0);
-    texture.Bind();
+    texture.bind();
     
     glBindVertexArray(_quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

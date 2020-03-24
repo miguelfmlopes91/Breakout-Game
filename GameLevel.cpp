@@ -67,7 +67,7 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tileData, GLuint levelWidt
             if (tileData[y][x] == 1){ // Solid
                 glm::vec2 pos(unit_width * x, unit_height * y);
                 glm::vec2 size(unit_width, unit_height);
-                GameObject obj(pos, size, ResourceManager::GetTexture("block_solid"), glm::vec3(0.8f, 0.8f, 0.7f));
+                GameObject obj(pos, size, ResourceManager::getTexture("block_solid"), glm::vec3(0.8f, 0.8f, 0.7f));
                 obj._isSolid = GL_TRUE;
                 _bricksVector.push_back(obj);
             }
@@ -84,7 +84,7 @@ void GameLevel::init(std::vector<std::vector<GLuint>> tileData, GLuint levelWidt
                 
                 glm::vec2 pos(unit_width * x, unit_height * y);
                 glm::vec2 size(unit_width, unit_height);
-                _bricksVector.push_back(GameObject(pos, size, ResourceManager::GetTexture("block"), color));
+                _bricksVector.push_back(GameObject(pos, size, ResourceManager::getTexture("block"), color));
             }
         }
     }
