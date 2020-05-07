@@ -48,7 +48,6 @@ int main(int argc, char *argv[]){
     glfwSetErrorCallback(error_callback);
 
     //OpenGL configureview port
-
     GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
     glfwMakeContextCurrent(window);
     
@@ -57,11 +56,6 @@ int main(int argc, char *argv[]){
     glGetError(); // Call it once to catch glewInit() bug, all other errors are now from our application.
     glfwSetKeyCallback(window, key_callback);//catch any window bug as well
     
-    
-//    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-//        std::cout << "Failed to initialize GLAD" << std::endl;
-//        return -1;
-//    }
     
     // OpenGL configuration
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -76,13 +70,9 @@ int main(int argc, char *argv[]){
     GLfloat deltaTime = 0.0f;
     GLfloat lastFrame = 0.0f;
     
-//    // Start Game within Menu State
-//    Breakout.State = GAME_ACTIVE;
-    
     while (!glfwWindowShouldClose(window)){
         glfwPollEvents();
         
-        //deltaTime = 0.001f;
         // Manage user input
         Breakout.processInput(deltaTime);
         
