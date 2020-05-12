@@ -30,23 +30,23 @@ std::map<std::string, Shader>       ResourceManager::_shadersMap;
 Shader ResourceManager::loadShader(const GLchar *vShaderFile,
                                    const GLchar *fShaderFile,
                                    const GLchar *gShaderFile,
-                                   std::string name){
+                                   const std::string& name){
     _shadersMap[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
     return _shadersMap[name];
 }
 
-Shader ResourceManager::getShader(std::string name){
+Shader ResourceManager::getShader(const std::string& name){
     return _shadersMap[name];
 }
 
 Texture2D ResourceManager::loadTexture(const GLchar *file,
                                        GLboolean alpha,
-                                       std::string name){
+                                       const std::string& name){
     _texturesMap[name] = loadTextureFromFile(file, alpha);
     return _texturesMap[name];
 }
 
-Texture2D ResourceManager::getTexture(std::string name){
+Texture2D ResourceManager::getTexture(const std::string& name){
     return _texturesMap[name];
 }
 

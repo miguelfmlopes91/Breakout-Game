@@ -27,6 +27,7 @@
 #include "PostProcessor.hpp"
 #include "PowerUp.hpp"
 #include "TextRenderer.hpp"
+#include "GameView.hpp"
 
 
 // Represents the current state of the game
@@ -68,6 +69,8 @@ private:
     void activatePowerUp(PowerUp &powerUp);
     void resetLevel();
     void resetPlayer();
+    
+    GameView* _view;
     
     // Game state
     GameState               _state;

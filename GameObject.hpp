@@ -14,8 +14,7 @@
  ** Creative Commons, either version 4 of the License, or (at your
  ** option) any later version.
  ******************************************************************/
-#ifndef GAMEOBJECT_H
-#define GAMEOBJECT_H
+#pragma once
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -49,5 +48,3 @@ public:
     // Render state
     Texture2D   _sprite;
 };
-
-#endif

@@ -16,8 +16,7 @@
  ******************************************************************/
 #include "SpriteRenderer.hpp"
 
-
-SpriteRenderer::SpriteRenderer(Shader &shader){
+SpriteRenderer::SpriteRenderer(Shader&& shader){
     _shader = shader;
     initRenderData();
 }
@@ -26,7 +25,7 @@ SpriteRenderer::~SpriteRenderer(){
     glDeleteVertexArrays(1, &_quadVAO);
 }
 
-void SpriteRenderer::drawSprite(Texture2D &texture,
+void SpriteRenderer::drawSprite(Texture2D&& texture,
                                 glm::vec2 position,
                                 glm::vec2 size,
                                 GLfloat rotate,

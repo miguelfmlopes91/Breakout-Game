@@ -45,6 +45,6 @@ GameObject::GameObject(glm::vec2 pos,
     
 }
 
-void GameObject::draw(SpriteRenderer &renderer){
-    renderer.drawSprite(_sprite, _position, _size, _rotation, _color);
+void GameObject::draw(SpriteRenderer& renderer){
+    renderer.drawSprite(std::move(_sprite), _position, _size, _rotation, _color);
 }

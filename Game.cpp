@@ -53,41 +53,19 @@ Game::~Game(){
 }
 
 void Game::init(){
-    // Load shaders
-    ResourceManager::loadShader("Resources/shaders/sprite.vs", "Resources/shaders/sprite.frag", nullptr, "sprite");
-    ResourceManager::loadShader("Resources/shaders/particle.vs", "Resources/shaders/particle.frag", nullptr, "particle");
-    ResourceManager::loadShader("Resources/shaders/post_processing.vs", "Resources/shaders/post_processing.frag", nullptr, "postprocessing");
-
-    // Configure shaders
-    glm::mat4 projection = glm::ortho(0.0f,static_cast<GLfloat>(_width),static_cast<GLfloat>(_height),0.0f, -1.0f, 1.0f);
-    ResourceManager::getShader("sprite").use().setInteger("image", 0);
-    ResourceManager::getShader("sprite").setMatrix4("projection", projection);
-    ResourceManager::getShader("particle").use().setInteger("sprite", 0);
-    ResourceManager::getShader("particle").setMatrix4("projection", projection);
-    // Load textures
-    ResourceManager::loadTexture("Resources/background.jpg", GL_FALSE, "background");
-    ResourceManager::loadTexture("Resources/awesomeface.png", GL_TRUE, "face");
-    ResourceManager::loadTexture("Resources/block.png", GL_FALSE, "block");
-    ResourceManager::loadTexture("Resources/block_solid.png", GL_FALSE, "block_solid");
-    ResourceManager::loadTexture("Resources/paddle.png", true, "paddle");
-    ResourceManager::loadTexture("Resources/particle.png", GL_TRUE, "particle");
-    ResourceManager::loadTexture("Resources/PowerUps/powerup_speed.png", GL_TRUE, "powerup_speed");
-    ResourceManager::loadTexture("Resources/PowerUps/powerup_sticky.png", GL_TRUE, "powerup_sticky");
-    ResourceManager::loadTexture("Resources/PowerUps/powerup_increase.png", GL_TRUE, "powerup_increase");
-    ResourceManager::loadTexture("Resources/PowerUps/powerup_confuse.png", GL_TRUE, "powerup_confuse");
-    ResourceManager::loadTexture("Resources/PowerUps/powerup_chaos.png", GL_TRUE, "powerup_chaos");
-    ResourceManager::loadTexture("Resources/PowerUps/powerup_passthrough.png", GL_TRUE, "powerup_passthrough");
+    
+    _view = new GameView(_width,_height);
+    _view->init();
     
     // Set render-specific controls
-    Shader myShader;//TODO: FIX THIS
-    myShader    = ResourceManager::getShader("sprite");
-    _renderer    = new SpriteRenderer(myShader);
+    _renderer    = new SpriteRenderer(ResourceManager::getShader("sprite"));
     _effects     = new PostProcessor(ResourceManager::getShader("postprocessing"), _width, _height);
     _text        = new TextRenderer(_width, _height);
     _text->load("Resources/fonts/ocraext.TTF", 24);
     //Setup Particle System
     _particles   = new  ParticleGenerator(ResourceManager::getShader("particle"),
-                                         ResourceManager::getTexture("particle"),500);
+                                         ResourceManager::getTexture("particle"),
+                                          500);
 
     // Load levels
     GameLevel one;
@@ -197,14 +175,15 @@ void Game::processInput(GLfloat dt){
 }
 
 void Game::render(){
-    Texture2D myTexture;
-    myTexture = ResourceManager::getTexture("background");//TODO:move this into Init
     if (_state == GAME_ACTIVE || _state == GAME_MENU || _state == GAME_WIN){
         // Begin rendering to postprocessing quad
         _effects->beginRender();
         
         // Draw background
-        _renderer->drawSprite(myTexture,glm::vec2(0, 0),glm::vec2(_width, _height),0.0f);
+        _renderer->drawSprite(ResourceManager::getTexture("background"),
+                              glm::vec2(0, 0),
+                              glm::vec2(_width, _height),
+                              0.0f);
         // Draw level
         _levelsVector[_level].draw(*_renderer);
         // Draw player
