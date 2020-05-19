@@ -40,7 +40,7 @@ inline GLboolean isOtherPowerUpActive(std::vector<PowerUp> &powerUps, std::strin
 
 
 Game::Game(GLuint width, GLuint height)
-: _state(GAME_MENU), _keysArray(), _width(width), _height(height), _level(0), _lives(3){
+: _state(GAME_MENU), _keysArray(), _width(width), _height(height){
 }
 
 Game::~Game(){
@@ -53,9 +53,35 @@ Game::~Game(){
 }
 
 void Game::init(){
+
+    _model = new GameModel();
+    _model->init();
+    
+    auto boardsArray = _model->createBoardTiles();
+    
+    auto loadedLevel = boardsArray[_model->currentLevel()];//by default level zero
+    
+    std::vector<std::vector<TileType>> lol;
+    
+    lol.reserve(loadedLevel.size());
+    
+    int yTiles =  static_cast<int>(loadedLevel.size());
+    int xTiles =  static_cast<int>(loadedLevel[0].size());
+    
+    std::vector<TileType> row;
+    
+    for (int y = 0; y < yTiles; ++y){
+        row.reserve(xTiles);
+        for (int x = 0; x < xTiles; ++x){
+            row.push_back(loadedLevel[y][x].tileType);
+        }
+        lol.push_back(row);
+        row.clear();
+    }
     
     _view = new GameView(_width,_height);
-    _view->init();
+    _view->init(lol);
+    
     
     // Set render-specific controls
     _renderer    = new SpriteRenderer(ResourceManager::getShader("sprite"));
@@ -66,21 +92,6 @@ void Game::init(){
     _particles   = new  ParticleGenerator(ResourceManager::getShader("particle"),
                                          ResourceManager::getTexture("particle"),
                                           500);
-
-    // Load levels
-    GameLevel one;
-    GameLevel two;
-    GameLevel three;
-    GameLevel four;
-    one.load("Resources/levels/one.lvl", _width, _height * 0.5);
-    two.load("Resources/levels/two.lvl", _width, _height * 0.5);
-    three.load("Resources/levels/three.lvl", _width, _height * 0.5);
-    four.load("Resources/levels/four.lvl", _width, _height * 0.5);
-    _levelsVector.push_back(one);
-    _levelsVector.push_back(two);
-    _levelsVector.push_back(three);
-    _levelsVector.push_back(four);
-    _level = 0;
     
     // Configure game objects
     glm::vec2 playerPos = glm::vec2(_width / 2 - PLAYER_SIZE.x / 2, _height - PLAYER_SIZE.y);
@@ -119,7 +130,7 @@ void Game::update(GLfloat dt){
         resetPlayer();
     }
     // Check win condition
-    if (_state == GAME_ACTIVE && _levelsVector[_level].isCompleted()){
+    if(_state == GAME_ACTIVE && _model->isCompleted()){//TODO:: very expensive check
         resetLevel();
         resetPlayer();
         _effects->Chaos = GL_TRUE;
@@ -129,20 +140,22 @@ void Game::update(GLfloat dt){
 
 void Game::processInput(GLfloat dt){
     if (_state == GAME_MENU){
+        int level = _model->currentLevel();
         if (_keysArray[GLFW_KEY_ENTER] && !_KeysProcessed[GLFW_KEY_ENTER]){
             _state = GAME_ACTIVE;
             _KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
         }
         if (_keysArray[GLFW_KEY_W] && !_KeysProcessed[GLFW_KEY_W]){
-            _level = (_level + 1) % 4;
+            level = (level + 1) % 4;
             _KeysProcessed[GLFW_KEY_W] = GL_TRUE;
         }if (_keysArray[GLFW_KEY_S] && !_KeysProcessed[GLFW_KEY_S]){
-            if (_level > 0)
-                --_level;
+            if (level > 0)
+                --level;
             else
-                _level = 3;
+                level = 3;
             _KeysProcessed[GLFW_KEY_S] = GL_TRUE;
         }
+        _model->setCurrentLevel(level);
     }
     if (_state == GAME_WIN){
         if (_keysArray[GLFW_KEY_ENTER]){
@@ -185,7 +198,7 @@ void Game::render(){
                               glm::vec2(_width, _height),
                               0.0f);
         // Draw level
-        _levelsVector[_level].draw(*_renderer);
+        _view->draw(*_renderer);
         // Draw player
         _player->draw(*_renderer);
         // Draw PowerUps
@@ -217,16 +230,7 @@ void Game::render(){
 }
 
 void Game::resetLevel(){
-    if (_level == 0)
-        _levelsVector[0].load("Resources/levels/one.lvl", _width, _height * 0.5f);
-    else if (_level == 1)
-        _levelsVector[1].load("Resources/levels/two.lvl", _width, _height * 0.5f);
-    else if (_level == 2)
-        _levelsVector[2].load("Resources/levels/three.lvl", _width, _height * 0.5f);
-    else if (_level == 3)
-        _levelsVector[3].load("Resources/levels/four.lvl", _width, _height * 0.5f);
-    //Reset lives
-    _lives = 3;
+    _model->resetLevel();
 }
 
 void Game::resetPlayer(){
@@ -242,7 +246,7 @@ void Game::resetPlayer(){
 }
 
 void Game::doCollisions(){
-    for (GameObject &box : _levelsVector[_level]._bricksVector){
+    for (GameObject &box : _view->_bricksVector[_model->currentLevel()]){
         if (!box._destroyed){
             //Ball - brick collisions
             Collision collision = checkCollision(*_ball, box);

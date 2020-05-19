@@ -22,7 +22,7 @@ class BallObject : public GameObject{
 public:
     // Constructor(s)
     BallObject();
-    BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, Texture2D sprite);
+    BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, Texture2D&& sprite);
     
     /// Moves the ball, keeping it constrained within the window bounds (except bottom edge);
     ///@return new position

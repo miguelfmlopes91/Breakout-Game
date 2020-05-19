@@ -23,8 +23,8 @@ class PowerUp : public GameObject{
 public:
     // Constructor
     PowerUp(std::string type, glm::vec3 color, GLfloat duration,
-            glm::vec2 position, Texture2D texture)
-        : GameObject(position, SIZE, texture, color, VELOCITY),
+            glm::vec2 position, Texture2D&& texture)
+        : GameObject(position, SIZE, std::move(texture), color, VELOCITY),
           _type(type), _duration(duration), _activated()
     { }
     

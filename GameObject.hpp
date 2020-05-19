@@ -31,9 +31,12 @@ public:
     GameObject();
     GameObject(glm::vec2 pos,
                glm::vec2 size,
-               Texture2D sprite,
+               Texture2D&& sprite,
                glm::vec3 color = glm::vec3(1.0f),
                glm::vec2 velocity = glm::vec2(0.0f, 0.0f));
+    GameObject(const GameObject& obj) = default;
+    
+    GameObject& operator=(const GameObject& obj) = default;
     //TODO: virtual dtor
     // Draw sprite
     virtual void draw(SpriteRenderer &renderer);

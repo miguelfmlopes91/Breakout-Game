@@ -8,6 +8,11 @@
 
 #pragma once
 #include <GL/glew.h>
+#include <vector>
+
+#include "GameObject.hpp"
+#include "GameDefinitions.h"
+
 
 class GameView {
 public:
@@ -15,8 +20,14 @@ public:
     GameView(int width, int height);
     ~GameView();
     
-    void init();
-    
+    void init(std::vector<std::vector<TileType>> tileBoard);
+    void draw(SpriteRenderer &renderer);
+
+public:
+    // Level state
+    std::vector<std::vector<GameObject>> _bricksVector;
 private:
+    void initLevel(std::vector<std::vector<TileType>> tileBoard);
+    void reloadLevel();
     GLuint _width, _height;
 };

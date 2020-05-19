@@ -27,8 +27,9 @@
 #include "PostProcessor.hpp"
 #include "PowerUp.hpp"
 #include "TextRenderer.hpp"
-#include "GameView.hpp"
 
+#include "GameView.hpp"
+#include "GameModel.hpp"
 
 // Represents the current state of the game
 enum GameState {
@@ -71,12 +72,11 @@ private:
     void resetPlayer();
     
     GameView* _view;
-    
+    GameModel* _model;
     // Game state
     GameState               _state;
     GLuint                  _width, _height;
-    std::vector<GameLevel>  _levelsVector;
-    GLuint                  _level;
+
     std::vector<PowerUp>    _powerUpsVector;
     GLuint                  _lives;
     GLboolean               _KeysProcessed[1024];
@@ -89,6 +89,7 @@ private:
     TextRenderer        *_text;
     //Shake animation time
     GLfloat             _shakeTime = 0.0f;
+    
 };
 
 #endif
