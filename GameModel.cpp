@@ -15,6 +15,7 @@ void GameModel::init(){
     _lives = 3;
 }
 
+//TODO: refactor this, very bad. Keep a counter of living bricks and check if it's lower than 0.
 GLboolean GameModel::isCompleted(){
     auto currentBoard = _boardTilesLevels[_currentLevel];
     int height = static_cast<int>(currentBoard.size());

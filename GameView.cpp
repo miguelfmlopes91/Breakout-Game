@@ -72,7 +72,7 @@ void GameView::initLevel(std::vector<std::vector<TileType>> tileBoard){
                 else if (tileBoard[y][x] == TileType::blue)
                     color = glm::vec3(0.0f, 0.7f, 0.0f);
                 else if (tileBoard[y][x] == TileType::green)
-                    color = glm::vec3(0.8f, 0.8f, 0.4f);
+                    color = glm::vec3(0.8f, 0.8f, 0.4f);//yellow
                 else if (tileBoard[y][x] == TileType::red)
                     color = glm::vec3(1.0f, 0.5f, 0.0f);
                 

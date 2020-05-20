@@ -108,7 +108,7 @@ void Game::update(GLfloat dt){
     // Update objects
     _ball->move(dt, _width);
     // Check for collisions
-    doCollisions();
+    doCollisions();//TODO: only do this while in game
     // Update particles
     _particles->update(dt, *_ball, 2, glm::vec2(_ball->_radius / 2));
     // Update PowerUps
@@ -164,7 +164,8 @@ void Game::processInput(GLfloat dt){
             _state = GAME_MENU;
         }
     }
-    if (_state == GAME_ACTIVE){
+    if (_state == GAME_ACTIVE){//TODO: remove +DT from here
+        
         GLfloat velocity = PLAYER_VELOCITY * dt;
         // Move playerboard
         if (_keysArray[GLFW_KEY_A]){
@@ -246,7 +247,8 @@ void Game::resetPlayer(){
 }
 
 void Game::doCollisions(){
-    for (GameObject &box : _view->_bricksVector[_model->currentLevel()]){
+    for (auto& row : _view->_bricksVector) {
+        for (GameObject &box : row){
         if (!box._destroyed){
             //Ball - brick collisions
             Collision collision = checkCollision(*_ball, box);
@@ -312,6 +314,7 @@ void Game::doCollisions(){
                 resetPlayer();
             }
         }
+    }
     }
     for (PowerUp &powerUp : _powerUpsVector){
         if (!powerUp._destroyed){
