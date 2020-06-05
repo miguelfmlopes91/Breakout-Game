@@ -40,7 +40,7 @@ Shader ResourceManager::getShader(const std::string& name){
 }
 
 Texture2D ResourceManager::loadTexture(const GLchar *file,
-                                       GLboolean alpha,
+                                       bool alpha,
                                        const std::string& name){
     _texturesMap[name] = loadTextureFromFile(file, alpha);
     return _texturesMap[name];
@@ -102,7 +102,7 @@ Shader ResourceManager::loadShaderFromFile(const GLchar *vShaderFile,
 }
 
 Texture2D ResourceManager::loadTextureFromFile(const GLchar *file,
-                                               GLboolean alpha){
+                                               bool alpha){
     // Create Texture object
     Texture2D texture;
     if (alpha){

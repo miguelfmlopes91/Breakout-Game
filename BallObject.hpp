@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-
 #include "Texture.hpp"
 #include "PowerUp.hpp"
 
@@ -22,17 +19,17 @@ class BallObject : public GameObject{
 public:
     // Constructor(s)
     BallObject();
-    BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, Texture2D&& sprite);
+    BallObject(glm::vec2 pos, float radius, glm::vec2 velocity, Texture2D&& sprite);
     
     /// Moves the ball, keeping it constrained within the window bounds (except bottom edge);
     ///@return new position
-    glm::vec2 move(GLfloat dt, GLuint window_width);
+    glm::vec2 move(float dt, GLuint window_width);
     /// Resets the ball to original state with given position and velocity
     void reset(glm::vec2 position, glm::vec2 velocity);
 
     /// Ball state
-    GLfloat     _radius;
-    GLboolean   _stuck;
-    GLboolean   _sticky;
-    GLboolean   _passThrough;
+    float  _radius;
+    bool   _stuck;
+    bool   _sticky;
+    bool   _passThrough;
 };

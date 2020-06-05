@@ -42,7 +42,7 @@ public:
     static Shader   getShader(const std::string& name);
     // Loads (and generates) a texture from file
     static Texture2D loadTexture(const GLchar *file,
-                                 GLboolean alpha,
+                                 bool alpha,
                                  const std::string& name);
     // Retrieves a stored texture
     static Texture2D getTexture(const std::string& name);
@@ -57,7 +57,7 @@ private:
                                         const GLchar *gShaderFile = nullptr);
     // Loads a single texture from file
     static Texture2D loadTextureFromFile(const GLchar *file,
-                                         GLboolean alpha);
+                                         bool alpha);
     
     // Resource storage
     static std::map<std::string, Shader>    _shadersMap;

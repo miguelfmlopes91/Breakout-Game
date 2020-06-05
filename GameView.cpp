@@ -21,7 +21,7 @@ void GameView::init(std::vector<std::vector<TileType>> tileBoard){
     ResourceManager::loadShader("Resources/shaders/post_processing.vs", "Resources/shaders/post_processing.frag", nullptr, "postprocessing");
 
     // Configure shaders
-    glm::mat4 projection = glm::ortho(0.0f,static_cast<GLfloat>(_width),static_cast<GLfloat>(_height),0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f,static_cast<float>(_width),static_cast<float>(_height),0.0f, -1.0f, 1.0f);
     ResourceManager::getShader("sprite").use().setInteger("image", 0);
     ResourceManager::getShader("sprite").setMatrix4("projection", projection);
     ResourceManager::getShader("particle").use().setInteger("sprite", 0);

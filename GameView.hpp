@@ -18,7 +18,7 @@ class GameView {
 public:
     GameView() = delete;
     GameView(int width, int height);
-    ~GameView();
+    ~GameView() = default;
     
     void init(std::vector<std::vector<TileType>> tileBoard);
     void draw(SpriteRenderer &renderer);

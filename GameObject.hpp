@@ -45,9 +45,9 @@ public:
     glm::vec2   _size;
     glm::vec2   _velocity;
     glm::vec3   _color;
-    GLfloat     _rotation;
-    GLboolean   _isSolid;
-    GLboolean   _destroyed;
+    float     _rotation;
+    bool   _isSolid;
+    bool   _destroyed;
     // Render state
     Texture2D   _sprite;
 };

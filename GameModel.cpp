@@ -8,15 +8,63 @@
 
 #include "GameModel.hpp"
 
+GameModel::GameModel() : _state(GAME_MENU){
+    
+}
 
 void GameModel::init(){
     loadLevels();
     _currentLevel = 0;
     _lives = 3;
+    _inputMgr = new InputManager();
+}
+
+void GameModel::processInput(){
+    int level = currentLevel();
+    //TODO: switch case based on state
+    if (_state == GAME_MENU){
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_ENTER) && !_inputMgr->getLastKeyDown(GLFW_KEY_ENTER)){
+            _state = GAME_ACTIVE;
+            _inputMgr->setLastKeyDown(GLFW_KEY_ENTER, true);
+        }
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_W) && !_inputMgr->getLastKeyDown(GLFW_KEY_W)){
+            _currentLevel = (level + 1) % 4;
+            _inputMgr->setLastKeyDown(GLFW_KEY_W, true);
+        }
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_S) && !_inputMgr->getLastKeyDown(GLFW_KEY_S)){
+            if (_currentLevel > 0){
+                --_currentLevel;
+            }else{
+                level = 3;
+            }
+            _inputMgr->setLastKeyDown(GLFW_KEY_S, true);
+        }
+        setCurrentLevel(level);
+    }
+    if (_state == GAME_WIN){
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_ENTER)){
+            _inputMgr->setLastKeyDown(GLFW_KEY_ENTER, true);
+            _toggleChaosEffectCallback(false);            
+            _state = GAME_MENU;
+        }
+    }
+    if (_state == GAME_ACTIVE){//TODO: remove +DT from here
+                
+        // Move playerboard
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_A)){
+            _keyPressCallback(LEFT);
+        }
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_D)){
+            _keyPressCallback(RIGHT);
+        }
+        if(_inputMgr->getIsKeyDown(GLFW_KEY_SPACE)){
+            _toggleBallStuck(false);
+        }
+    }
 }
 
 //TODO: refactor this, very bad. Keep a counter of living bricks and check if it's lower than 0.
-GLboolean GameModel::isCompleted(){
+bool GameModel::isCompleted(){
     auto currentBoard = _boardTilesLevels[_currentLevel];
     int height = static_cast<int>(currentBoard.size());
     int width = static_cast<int>(currentBoard[0].size()); // Note we can index vector at [0] since this function is only called if height > 0
@@ -91,4 +139,16 @@ std::vector<TileBoard> GameModel::createBoardTiles(){
         _boardTiles.clear();
     }
     return _boardTilesLevels;
+}
+
+void GameModel::toggleChaosEffect(ToggleChaosEffect handler){
+    _toggleChaosEffectCallback = handler;
+}
+
+void GameModel::toggleBallStuck(ToggleBallStuck handler){
+    _toggleBallStuck = handler;
+}
+
+void GameModel::setKeyPressHandler(KeyPressed handler){
+    _keyPressCallback = handler;
 }

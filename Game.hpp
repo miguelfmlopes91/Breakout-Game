@@ -21,31 +21,19 @@
 #include <GLFW/glfw3.h>
 #include "ResourceManager.hpp"
 #include "SpriteRenderer.hpp"
-#include "GameLevel.hpp"
-#include "BallObject.hpp"
 #include "ParticleGenerator.hpp"
 #include "PostProcessor.hpp"
 #include "PowerUp.hpp"
 #include "TextRenderer.hpp"
+#include "BallObject.hpp"
 
 #include "GameView.hpp"
 #include "GameModel.hpp"
 
-// Represents the current state of the game
-enum GameState {
-    GAME_ACTIVE,
-    GAME_MENU,
-    GAME_WIN
-};
-// Represents the direction of a vector in the game
-enum Direction {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT
-};
+
+
 // Defines a Collision typedef that represents collision data
-typedef std::tuple<GLboolean, Direction, glm::vec2> Collision;
+typedef std::tuple<bool, Direction, glm::vec2> Collision;
 
 // Game holds all game-related state and functionality.
 // Combines all game-related data into a single class for
@@ -58,37 +46,39 @@ public:
     // Initialize game state (load all shaders/textures/levels)
     void init();
     // GameLoop
-    void processInput(GLfloat dt);
-    void update(GLfloat dt);
+    void processInput();
+    void update(float dt);
     void render();
     // Game state
-    GLboolean               _keysArray[1024];
 private:
     void doCollisions();
     void spawnPowerUps(GameObject &block);
-    void updatePowerUps(GLfloat dt);
+    void updatePowerUps(float dt);
     void activatePowerUp(PowerUp &powerUp);
     void resetLevel();
     void resetPlayer();
     
-    GameView* _view;
-    GameModel* _model;
-    // Game state
-    GameState               _state;
+    void OnChaosEffectTriggered(bool);
+    void OnBallStuck(bool);
+    void onKeyPressed(Direction);
+    
+    std::unique_ptr<GameView> _view;
+    std::unique_ptr<GameModel> _model;
+
     GLuint                  _width, _height;
 
     std::vector<PowerUp>    _powerUpsVector;
     GLuint                  _lives;
-    GLboolean               _KeysProcessed[1024];
     // Game-related State data
     SpriteRenderer      *_renderer;
-    GameObject          *_player;
-    BallObject          *_ball;
+
+    std::unique_ptr<GameObject> _player;
+    std::unique_ptr<BallObject> _ball;
     ParticleGenerator   *_particles;
     PostProcessor       *_effects;
     TextRenderer        *_text;
     //Shake animation time
-    GLfloat             _shakeTime = 0.0f;
+    float             _shakeTime = 0.0f;
     
 };
 

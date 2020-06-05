@@ -15,7 +15,7 @@ ParticleGenerator::ParticleGenerator(Shader shader, Texture2D texture, GLuint am
 void ParticleGenerator::init(){
     // Set up mesh and attribute properties
     GLuint VBO;
-    GLfloat particle_quad[] = {
+    float particle_quad[] = {
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f,
@@ -32,7 +32,7 @@ void ParticleGenerator::init(){
     glBufferData(GL_ARRAY_BUFFER, sizeof(particle_quad), particle_quad, GL_STATIC_DRAW);
     // Set mesh attributes
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (GLvoid*)0);
     glBindVertexArray(0);
 
     // Create amount default particle instances
@@ -42,7 +42,7 @@ void ParticleGenerator::init(){
 
 //Then in each frame, we spawn several new particles with starting values
 //and then for each particle that is (still) alive we update their values.
-void ParticleGenerator::update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset){
+void ParticleGenerator::update(float dt, GameObject &object, GLuint newParticles, glm::vec2 offset){
     // Add new particles
     for (GLuint i = 0; i < newParticles; ++i){
         int unusedParticle = firstUnusedParticle();
@@ -104,8 +104,8 @@ GLuint ParticleGenerator::firstUnusedParticle(){//TODO: have a another structure
 }
 
 void ParticleGenerator::respawnParticle(Particle &particle, GameObject &object, glm::vec2 offset){
-    GLfloat random = ((rand() % 100) - 50) / 10.0f;
-    GLfloat rColor = 0.5 + ((rand() % 100) / 100.0f);
+    float random = ((rand() % 100) - 50) / 10.0f;
+    float rColor = 0.5 + ((rand() % 100) / 100.0f);
     particle.Position = object._position + random + offset;
     particle.Color = glm::vec4(rColor, rColor, rColor, 1.0f);
     particle.Life = 1.0f;
