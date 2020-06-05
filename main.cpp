@@ -36,8 +36,6 @@ int main(int argc, char *argv[]){
     
     WindowManager window;
     window.createWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
-    
-
     // OpenGL configuration
     window.configureOpenGL();
     
@@ -67,7 +65,7 @@ int main(int argc, char *argv[]){
         glClear(GL_COLOR_BUFFER_BIT);
         Breakout.render();
         
-        glfwSwapBuffers(&window.getWindow());
+        glfwSwapBuffers(&window.getWindow());//TODO: put into windowmanager
     }
     
     // Delete all resources as loaded using the resource manager

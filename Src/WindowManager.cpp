@@ -6,8 +6,13 @@
 //  Copyright © 2020 Miguel Lopes. All rights reserved.
 //
 
-#include "WindowManager.hpp"
+#define GLEW_STATIC
+#define GLFW_INCLUDE_GLCOREARB
+#define GL_SILENCE_DEPRECATION
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
+#include "WindowManager.hpp"
 
 // Error callback for GLFW error handling
 void error_callback(int error, const char* description){
@@ -20,8 +25,9 @@ WindowManager::WindowManager(){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GL_FALSE);
     glfwSetErrorCallback(error_callback);
 }
 
@@ -38,7 +44,9 @@ void WindowManager::createWindow(int width, int height, const char* title, GLFWm
 }
 
 void WindowManager::configureOpenGL(){
-    glViewport(0, 0, _width, _height);
+    int width, height;
+    glfwGetFramebufferSize(_window, &width, &height);
+    glViewport(0, 0, width/2, height/2);
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
