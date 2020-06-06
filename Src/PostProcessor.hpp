@@ -30,9 +30,9 @@ public:
     // Should be called after rendering the game, so it stores all the rendered data into a texture object
     void endRender();
     // Renders the PostProcessor texture quad (as a screen-encompassing large sprite)
-    void render(GLfloat time);
+    void render(float time);
     // Options
-    GLboolean Confuse, Chaos, Shake;
+    bool Confuse, Chaos, Shake;
 private:
     // Initialize quad for rendering postprocessing texture
     void initRenderData();

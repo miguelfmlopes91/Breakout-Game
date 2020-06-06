@@ -21,7 +21,7 @@
 struct Particle {
     glm::vec2 Position, Velocity;
     glm::vec4 Color;
-    GLfloat Life;
+    float Life;
 
     Particle() : Position(0.0f), Velocity(0.0f), Color(1.0f), Life(0.0f) { }
 };
@@ -35,7 +35,7 @@ public:
     // Constructor
     ParticleGenerator(Shader shader, Texture2D texture, GLuint amount);
     // Update all particles
-    void update(GLfloat dt, GameObject &object, GLuint newParticles, glm::vec2 offset = glm::vec2(0.0f, 0.0f));
+    void update(float dt, GameObject &object, GLuint newParticles, glm::vec2 offset = glm::vec2(0.0f, 0.0f));
     // Render all particles
     void draw();
 private:

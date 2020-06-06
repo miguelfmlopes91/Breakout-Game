@@ -39,8 +39,8 @@ PostProcessor::PostProcessor(Shader shader, GLuint width, GLuint height)
     // Initialize render data and uniforms
     initRenderData();
         PostProcessingShader.setInteger("scene", 0, GL_TRUE);
-    GLfloat offset = 1.0f / 300.0f;
-    GLfloat offsets[9][2] = {
+    float offset = 1.0f / 300.0f;
+    float offsets[9][2] = {
         { -offset,  offset  },  // top-left
         {  0.0f,    offset  },  // top-center
         {  offset,  offset  },  // top-right
@@ -51,14 +51,14 @@ PostProcessor::PostProcessor(Shader shader, GLuint width, GLuint height)
         {  0.0f,   -offset  },  // bottom-center
         {  offset, -offset  }   // bottom-right
     };
-    glUniform2fv(glGetUniformLocation(PostProcessingShader.ID, "offsets"), 9, (GLfloat*)offsets);
+    glUniform2fv(glGetUniformLocation(PostProcessingShader.ID, "offsets"), 9, (float*)offsets);
     GLint edge_kernel[9] = {
         -1, -1, -1,
         -1,  8, -1,
         -1, -1, -1
     };
     glUniform1iv(glGetUniformLocation(PostProcessingShader.ID, "edge_kernel"), 9, edge_kernel);
-    GLfloat blur_kernel[9] = {
+    float blur_kernel[9] = {
         1.0 / 16, 2.0 / 16, 1.0 / 16,
         2.0 / 16, 4.0 / 16, 2.0 / 16,
         1.0 / 16, 2.0 / 16, 1.0 / 16
@@ -80,7 +80,7 @@ void PostProcessor::endRender(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // Binds both READ and WRITE framebuffer to default framebuffer
 }
 
-void PostProcessor::render(GLfloat time){
+void PostProcessor::render(float time){
     // Set uniforms/options
     PostProcessingShader.use();
     PostProcessingShader.setFloat("time", time);
@@ -98,7 +98,7 @@ void PostProcessor::render(GLfloat time){
 void PostProcessor::initRenderData(){
     // Configure VAO/VBO
     GLuint VBO;
-    GLfloat vertices[] = {
+    float vertices[] = {
         // Pos        // Tex
         -1.0f, -1.0f, 0.0f, 0.0f,
          1.0f,  1.0f, 1.0f, 1.0f,

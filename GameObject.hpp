@@ -14,8 +14,7 @@
  ** Creative Commons, either version 4 of the License, or (at your
  ** option) any later version.
  ******************************************************************/
-#ifndef GAMEOBJECT_H
-#define GAMEOBJECT_H
+#pragma once
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -32,9 +31,12 @@ public:
     GameObject();
     GameObject(glm::vec2 pos,
                glm::vec2 size,
-               Texture2D sprite,
+               Texture2D&& sprite,
                glm::vec3 color = glm::vec3(1.0f),
                glm::vec2 velocity = glm::vec2(0.0f, 0.0f));
+    GameObject(const GameObject& obj) = default;
+    
+    GameObject& operator=(const GameObject& obj) = default;
     //TODO: virtual dtor
     // Draw sprite
     virtual void draw(SpriteRenderer &renderer);
@@ -43,11 +45,9 @@ public:
     glm::vec2   _size;
     glm::vec2   _velocity;
     glm::vec3   _color;
-    GLfloat     _rotation;
-    GLboolean   _isSolid;
-    GLboolean   _destroyed;
+    float     _rotation;
+    bool   _isSolid;
+    bool   _destroyed;
     // Render state
     Texture2D   _sprite;
 };
-
-#endif

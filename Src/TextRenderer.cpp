@@ -23,16 +23,16 @@ TextRenderer::TextRenderer(GLuint width, GLuint height){
                                                    "Resources/shaders/textshader.frag",
                                                    nullptr,
                                                    "text");
-    _textShader.setMatrix4("projection", glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f), GL_TRUE);
+    _textShader.setMatrix4("projection", glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f), GL_TRUE);
     _textShader.setInteger("text", 0);
     // Configure VAO/VBO for texture quads
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -95,7 +95,7 @@ void TextRenderer::load(std::string font, GLuint fontSize){
     FT_Done_FreeType(ft);
 }
 
-void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){
+void TextRenderer::renderText(std::string text, float x, float y, float scale, glm::vec3 color){
     // Activate corresponding render state
     _textShader.use();
     _textShader.setVector3f("textColor", color);
@@ -107,13 +107,13 @@ void TextRenderer::renderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
     for (c = text.begin(); c != text.end(); c++){
         Character ch = _characters[*c];
 
-        GLfloat xpos = x + ch.Bearing.x * scale;
-        GLfloat ypos = y + (_characters['H'].Bearing.y - ch.Bearing.y) * scale;//calculate the vertical offset as the distance a glyph is pushed downwards from the top of the glyph space
+        float xpos = x + ch.Bearing.x * scale;
+        float ypos = y + (_characters['H'].Bearing.y - ch.Bearing.y) * scale;//calculate the vertical offset as the distance a glyph is pushed downwards from the top of the glyph space
 
-        GLfloat w = ch.Size.x * scale;
-        GLfloat h = ch.Size.y * scale;
+        float w = ch.Size.x * scale;
+        float h = ch.Size.y * scale;
         // Update VBO for each character
-        GLfloat vertices[6][4] = {
+        float vertices[6][4] = {
             { xpos,     ypos + h,   0.0, 1.0 },
             { xpos + w, ypos,       1.0, 0.0 },
             { xpos,     ypos,       0.0, 0.0 },

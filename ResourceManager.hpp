@@ -37,15 +37,15 @@ public:
     static Shader   loadShader(const GLchar *vShaderFile,
                                const GLchar *fShaderFile,
                                const GLchar *gShaderFile,
-                               std::string name);
+                               const std::string& name);
     // Retrieves a stored sader
-    static Shader   getShader(std::string name);
+    static Shader   getShader(const std::string& name);
     // Loads (and generates) a texture from file
     static Texture2D loadTexture(const GLchar *file,
-                                 GLboolean alpha,
-                                 std::string name);
+                                 bool alpha,
+                                 const std::string& name);
     // Retrieves a stored texture
-    static Texture2D getTexture(std::string name);
+    static Texture2D getTexture(const std::string& name);
     // Properly de-allocates all loaded resources
     static void      clear();
 private:
@@ -57,7 +57,7 @@ private:
                                         const GLchar *gShaderFile = nullptr);
     // Loads a single texture from file
     static Texture2D loadTextureFromFile(const GLchar *file,
-                                         GLboolean alpha);
+                                         bool alpha);
     
     // Resource storage
     static std::map<std::string, Shader>    _shadersMap;

@@ -16,8 +16,7 @@
  ******************************************************************/
 #include "SpriteRenderer.hpp"
 
-
-SpriteRenderer::SpriteRenderer(Shader &shader){
+SpriteRenderer::SpriteRenderer(Shader&& shader){
     _shader = shader;
     initRenderData();
 }
@@ -26,10 +25,10 @@ SpriteRenderer::~SpriteRenderer(){
     glDeleteVertexArrays(1, &_quadVAO);
 }
 
-void SpriteRenderer::drawSprite(Texture2D &texture,
+void SpriteRenderer::drawSprite(Texture2D&& texture,
                                 glm::vec2 position,
                                 glm::vec2 size,
-                                GLfloat rotate,
+                                float rotate,
                                 glm::vec3 color){
     // Prepare transformations
     _shader.use();
@@ -64,7 +63,7 @@ void SpriteRenderer::drawSprite(Texture2D &texture,
 void SpriteRenderer::initRenderData(){
     // Configure VAO/VBO
     GLuint VBO;
-    GLfloat vertices[] = {
+    float vertices[] = {
         // Pos      // Tex
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
@@ -83,7 +82,7 @@ void SpriteRenderer::initRenderData(){
     
     glBindVertexArray(_quadVAO);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (GLvoid*)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
