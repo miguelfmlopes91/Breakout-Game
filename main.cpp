@@ -38,6 +38,8 @@ int main(int argc, char *argv[]){
     window.createWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
     // OpenGL configuration
     window.configureOpenGL();
+    //configure input
+    InputManager::setupKeyInputs(window);
     
     // Initialize game
     Breakout.init();

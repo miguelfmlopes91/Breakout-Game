@@ -79,10 +79,7 @@ void InputManager::callback(GLFWwindow* window, int key, int scancode, int actio
 }
 
 void InputManager::setIsKeyDown(int key, bool isDown) {
-  std::map<int,bool>::iterator it = _keys.find(key);
-  if (it != _keys.end()) {
     _keys[key] = isDown;
-  }
 }
 
 /*
